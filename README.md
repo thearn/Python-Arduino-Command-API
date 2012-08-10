@@ -115,8 +115,8 @@ Support is included for up to 8 servos.
 #Servo example
 board.Servo.attach(9) #declare servo on pin 9
 board.Servo.attach(10) #declare servo on pin 10
-board.Servo.write(9, 0)
-board.Servo.write(10, 180)
+board.Servo.write(9, 0) #move servo on pin 9 to 0 degrees
+board.Servo.write(10, 180) #move servo on pin 10 to 180 degrees
 angle_1 = board.Servo.read(9) # should be 0
 angle_2 = board.Servo.read(10) # should be 180
 board.Servo.detach(9) #free pin 9
