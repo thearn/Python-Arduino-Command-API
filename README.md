@@ -47,18 +47,20 @@ the functionality of many Arduino demo sketches.
 
 ## Classes
 *Arduino(baud)* - Set up communication with currently connected and powered Arduino. 
-
-The device name / COM port will be auto-detected. If there are more than one Arduino boards connected,
-the desired COM port can be also be passed:
 ```python
-Arduino(baud, port = "COM3") #Windows example
+board = Arduino("9600") #Example
+```
+The device name / COM port of the connected Arduino will be auto-detected. If there are more than one Arduino boards connected,
+the desired COM port can be also be passed as an optional argument:
+```python
+board = Arduino("9600", port = "COM3") #Windows example
 ```
 ```python
-Arduino(baud, port = "/dev/tty.usbmodemfa141") #OSX example
+board = Arduino("9600", port = "/dev/tty.usbmodemfa141") #OSX example
 ```
-A time-out for reading from the Arduino can also be specified:
+A time-out for reading from the Arduino can also be specified as an optional argument:
 ```python
-Arduino(baud, timeout = 2)
+board = Arduino("9600", timeout = 2) #Serial reading functions will wait for no more than 2 seconds
 ```
 
 *SoftwareSerial()* - A class for handling software serial functionality. Is used internally by the Arduino class, and should not be called directly.
@@ -69,15 +71,32 @@ Arduino(baud, timeout = 2)
 
 * *Arduino.digitalWrite(pin_number, state)* - turn digital pin on/off
 * *Arduino.digitalRead(pin_number)* - read state of a digital pin
+```python
+#Digital read / write example
+board.digitalWrite(13, "HIGH") #Set digital pin 13 voltage
+state_1 = board.digitalRead(13) #Will return integer 1
+board.digitalWrite(13, "LOW") #Set digital pin 13 voltage
+state_2 = board.digitalRead(13) #Will return integer 0
+```
 * *Arduino.pinMode(pin_number, io_mode)* - set pin I/O mode
 * *Arduino.pulseIn(pin_number, state)* - measures a pulse  
 * *Arduino.pulseIn_set(pin_number, state)* - measures a pulse, with preconditioning
-
+```python
+#Digital mode / pulse example
+board.pinMode(7, "INPUT") #Set digital pin 7 mode to INPUT
+duration = board.pulseIn(7, "HIGH") #Return pulse width measurement on pin 7
+```
 **Analog I/O**
 
 * *Arduino.analogRead(pin_number)* - returns the analog value
 * *Arduino.analogWrite(pin_number, value)* - sets the analog value
-
+```python
+#Analog I/O examples
+board = Arduino("9600") #Initialize
+val=board.analogRead(5) #Read value on analog pin 5 (integer 0 to 1023)
+val = val / 4 # scale to 0 - 255
+board.analogWrite(11) #Set analog value (PWM) based on analog measurement
+```
 **Software Serial Functionality**
 
 * *Arduino.SoftwareSerial.begin(ss_rxPin,ss_txPin,ss_device_baud)* - initialize software serial device on 
@@ -87,11 +106,19 @@ be be overwritten by calling this method, both in Python and on the arduino boar
 * *Arduino.SoftwareSerial.write(data)* - send data using the arduino 'write' function to the existing software serial connection.
 * *Arduino.SoftwareSerial.read()* - returns one byte from the existing software serial connection
 
+```python
+#Software serial example
+board.SoftwareSerial.begin(0,7,"19200") # Start software serial for transmit only (tx on pin 7)
+board.SoftwareSerial.write(" test ") #Send some data 
+response_char = board.SoftwareSerial.read() #read response character
+```
+
 **Misc**
 
 * *Arduino.close()* - closes serial connection to the Arduino.
 
 ## To-do list:
+* Expand software serial functionality (print() and println())
 * Add simple reset functionality that zeros out all pin values
 * Add I2C / TWI function support (Arduino Wire.h commands)
 * Add Servo support (Arduino Servo.h commands)

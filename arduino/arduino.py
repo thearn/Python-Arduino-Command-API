@@ -43,7 +43,7 @@ class SoftwareSerial(object):
 
     def read(self):
         """
-        returns first bit read from
+        returns first character read from
         existing software serial instance
         """
         if self.connected:
