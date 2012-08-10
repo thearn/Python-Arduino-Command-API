@@ -44,15 +44,21 @@ the functionality of many Arduino demo sketches.
 1. Load the sketch prototype.ino onto your Arduino board.
 2. Import the included arduino library into your python script.
 
-## Methods
 
+## Classes
 *Arduino(baud)* - Set up communication with currently connected and powered Arduino. 
 
 The device name / COM port will be auto-detected. If there are more than one Arduino boards connected,
 the desired COM port can be also be passed:
-*Arduino(baud, port = "COM3")* 
+```python
+Arduino(baud, port = "COM3")
+```
 A time-out for reading from the Arduino can also be specified:
-*Arduino(baud, timeout = 2)* 
+```python
+Arduino(baud, timeout = 2)
+```
+
+## Methods
 
 **Digital I/O**
 
