@@ -71,6 +71,7 @@ board = Arduino("9600", timeout = 2) #Serial reading functions will wait for no 
 
 * *Arduino.digitalWrite(pin_number, state)* - turn digital pin on/off
 * *Arduino.digitalRead(pin_number)* - read state of a digital pin
+
 ```python
 #Digital read / write example
 board.digitalWrite(13, "HIGH") #Set digital pin 13 voltage
@@ -78,6 +79,7 @@ state_1 = board.digitalRead(13) #Will return integer 1
 board.digitalWrite(13, "LOW") #Set digital pin 13 voltage
 state_2 = board.digitalRead(13) #Will return integer 0
 ```
+
 * *Arduino.pinMode(pin_number, io_mode)* - set pin I/O mode
 * *Arduino.pulseIn(pin_number, state)* - measures a pulse  
 * *Arduino.pulseIn_set(pin_number, state)* - measures a pulse, with preconditioning
