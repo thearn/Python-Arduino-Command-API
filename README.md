@@ -102,6 +102,27 @@ val = val / 4 # scale to 0 - 255
 board.analogWrite(11) #Set analog value (PWM) based on analog measurement
 ```
 
+**Servo Library Functionality**
+Support is included for up to 8 servos. 
+
+* *Arduino.Servo.attach(pin, min = 544, max = 2400)* - Create servo instance. Only 8 servos can be used at one time. 
+* *Arduino.Servo.read(pin)* - Returns the angle of the servo attached to the specified pin
+* *Arduino.Servo.write(pin, angle)* - Move an attached servo on a pin to a specified angle
+* *Arduino.Servo.writeMicroseconds(pin, uS)* - Write a value in microseconds to the servo on a specified pin
+* *Arduino.Servo.detach(pin)* - Detaches the servo on the specified pin
+
+```python
+#Servo example
+board.Servo.attach(9) #declare servo on pin 9
+board.Servo.attach(10) #declare servo on pin 10
+board.Servo.write(9, 0)
+board.Servo.write(10, 180)
+angle_1 = board.Servo.read(9) # should be 0
+angle_2 = board.Servo.read(10) # should be 180
+board.Servo.detach(9) #free pin 9
+board.Servo.detach(10) #free pin 10
+```
+
 **Software Serial Functionality**
 
 * *Arduino.SoftwareSerial.begin(ss_rxPin,ss_txPin,ss_device_baud)* - initialize software serial device on 
@@ -126,7 +147,6 @@ response_char = board.SoftwareSerial.read() #read response character
 * Expand software serial functionality (print() and println())
 * Add simple reset functionality that zeros out all pin values
 * Add I2C / TWI function support (Arduino Wire.h commands)
-* Add Servo support (Arduino Servo.h commands)
 * Add tone() / noTone() squarewave generator support for piezo type speakers
 * Include a wizard which generates 'prototype.ino' with selected serial baud rate and Arduino function support (to help reduce memory requirements).
 * Multi-serial support for Arduino mega (Serial1.read(), etc)

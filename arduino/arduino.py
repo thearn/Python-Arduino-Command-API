@@ -2,12 +2,79 @@
 from serial.tools import list_ports
 import serial, time
 
+class Servos(object):
+    """
+    Class for Arduino servo support
+    """
+    def __init__(self, board):
+        self.board = board
+        self.sr = board.sr
+        self.servo_pos = {}
+        
+    def attach(self,pin,min = 544, max = 2400):     
+        cmd_str=''.join(["@sva%",str(pin),"%",str(min),"%",str(max),"$!"])
+        try:
+            self.sr.write(cmd_str)
+            self.sr.flush()
+        except:
+            pass
+        rd = self.sr.readline().replace("\r\n","")
+        try:
+            position = int(rd)
+            self.servo_pos[pin] = position
+            return 1
+        except:
+            return 0
+     
+    def detach(self,pin):     
+        cmd_str=''.join(["@svd%",str(position),"$!"])
+        try:
+            self.sr.write(cmd_str)
+            self.sr.flush()
+        except:
+            pass
+        del self.servo_pos[pin]
+
+    def write(self,pin,angle):     
+        cmd_str=''.join(["@svw%",str(position),"%",str(angle),"$!"])
+        try:
+            self.sr.write(cmd_str)
+            self.sr.flush()
+        except:
+            pass
+   
+    def writeMicroseconds(self,pin,uS):     
+        cmd_str=''.join(["@svw%",str(position),"%",str(uS),"$!"])
+        try:
+            self.sr.write(cmd_str)
+            self.sr.flush()
+        except:
+            pass
+   
+    def read(self,pin):
+        if pin not in servo_pos.keys():
+            self.attach(pin) 
+        position = self.servo_pos[pin]
+        cmd_str=''.join(["@svr%",str(position),"$!"])
+        try:
+            self.sr.write(cmd_str)
+            self.sr.flush()
+        except:
+            pass
+        rd = self.sr.readline().replace("\r\n","")
+        try:
+            angle = int(rd)
+            return angle
+        except:
+            return None
+
 class SoftwareSerial(object):
     """
     Class for Arduino software serial functionality
     """
     def __init__(self,board):
         self.board=board
+        self.sr = board.sr
         self.connected = False
 
     def begin(self,p1,p2,baud):
@@ -16,9 +83,12 @@ class SoftwareSerial(object):
         specified tx,rx pins, at specified baud
         """
         cmd_str=''.join(["@ss%",str(p1),"%",str(p2),"%",str(baud),"$!"])
-        self.board.sr.write(cmd_str)
-        self.board.sr.flush()
-        response= self.board.sr.readline().replace("\r\n","")
+        try:
+            self.sr.write(cmd_str)
+            self.sr.flush()
+        except:
+            pass
+        response= self.sr.readline().replace("\r\n","")
         if response == "ss OK":
             self.connected = True
             return True
@@ -33,9 +103,12 @@ class SoftwareSerial(object):
         """
         if self.connected:
             cmd_str=''.join(["@sw%",str(data),"$!"])
-            self.board.sr.write(cmd_str)
-            self.board.sr.flush()
-            response= self.board.sr.readline().replace("\r\n","")
+            try:
+                self.sr.write(cmd_str)
+                self.sr.flush()
+            except:
+                pass
+            response= self.sr.readline().replace("\r\n","")
             if response == "ss OK":
                 return True
         else:
@@ -48,9 +121,9 @@ class SoftwareSerial(object):
         """
         if self.connected:
             cmd_str=''.join(["@sr%$!"])
-            self.board.sr.write(cmd_str)
-            self.board.sr.flush()
-            response= self.board.sr.readline().replace("\r\n","")
+            self.sr.write(cmd_str)
+            self.sr.flush()
+            response= self.sr.readline().replace("\r\n","")
             if response:
                 return response
         else:
@@ -66,6 +139,7 @@ class Arduino(object):
         self.timeout = timeout
         self.ss_connected=False
         self.SoftwareSerial = SoftwareSerial(self)
+        self.Servos = Servos(self)
         if port == "":
             self.findPort()
         self.sr = serial.Serial(self.port, self.baud,timeout =self.timeout)
@@ -258,8 +332,16 @@ class Arduino(object):
 
 if __name__=="__main__":
     board=Arduino(9600)
-    while True:
-        time.sleep(0.01)
-        val=board.analogRead(5)/4
-        board.analogWrite(11,val)
-    
+    board.Servos.attach(9)
+    time.sleep(.1)
+    print board.Servos.read(9)
+    board.Servos.write(100)
+    time.sleep(.1)
+    print board.Servos.read(9)
+    board.Servos.write(0)
+    time.sleep(.1)
+    print board.Servos.read(9)
+    board.Servos.write(100)
+    time.sleep(.1)
+    print board.Servos.read(9)
+    board.Servos.write(0)

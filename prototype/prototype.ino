@@ -3,7 +3,8 @@
 #include <Servo.h>
 
 SoftwareSerial *sserial = NULL;
-
+Servo servos[8];
+int servo_pins[] = {0, 0, 0, 0, 0, 0, 0, 0};
 boolean connected = false;
 
 int Str2int (String Str_value)
@@ -121,6 +122,62 @@ void pulseInSHandler(String data){
     Serial.println(duration);
 }
 
+void SV_add(String data) {
+    String sdata[3];
+    split(sdata,3,data,'%');
+    int pin = Str2int(sdata[0]);
+    int min = Str2int(sdata[1]);
+    int max = Str2int(sdata[2]);
+    int position = -1;
+    for (int i = 0; i<8;i++) {
+        if (servo_pins[i] == pin) { //reset in place
+            servos[position].detach();
+            servos[position].attach(pin, min, max);
+            servo_pins[position] = pin;
+            Serial.println(position);
+            return;
+            }
+        }
+    for (int i = 0; i<8;i++) {
+        if (servo_pins[i] == 0) {position = i;break;} // find spot in servo array
+        }
+    if (position == -1) {;} //no array position available!
+    else {
+        servos[position].attach(pin, min, max);
+        servo_pins[position] = pin;
+        Serial.println(position);
+        }
+}
+
+void SV_remove(String data) {
+    int position = Str2int(data);
+    servos[position].detach();
+    servo_pins[position] = 0;
+}
+
+void SV_read(String data) {
+    int position = Str2int(data);
+    angle = servos[position].read();
+    Serial.println(angle);
+}
+
+void SV_write(String data) {
+    String sdata[2];
+    split(sdata,2,data,'%');
+    int position = Str2int(sdata[0]);
+    int angle = Str2int(sdata[1]);
+    angle = servos[position].write(angle);
+}
+
+void SV_write_ms(String data) {
+    String sdata[2];
+    split(sdata,2,data,'%');
+    int position = Str2int(sdata[0]);
+    int uS = Str2int(sdata[1]);
+    angle = servos[position].writeMicroseconds(uS);
+}
+
+
 void SerialParser(void) {
   char readChar[64];
   Serial.readBytesUntil(33,readChar,64);
@@ -162,7 +219,22 @@ void SerialParser(void) {
   }
   else if (cmd == "sr") {
       SS_read(data);   
-  }     
+  }    
+  else if (cmd == "sva") {
+      SV_add(data);   
+  }      
+  else if (cmd == "svr") {
+      SV_read(data);   
+  }   
+ else if (cmd == "svw") {
+      SV_write(data);   
+  }    
+ else if (cmd == "svwm") {
+      SV_write_ms(data);   
+  }      
+  else if (cmd == "svd") {
+      SV_remove(data);   
+  }       
 }
 
 
