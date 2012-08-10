@@ -2,133 +2,6 @@
 from serial.tools import list_ports
 import serial, time
 
-class Servos(object):
-    """
-    Class for Arduino servo support
-    """
-    def __init__(self, board):
-        self.board = board
-        self.sr = board.sr
-        self.servo_pos = {}
-        
-    def attach(self,pin,min = 544, max = 2400):     
-        cmd_str=''.join(["@sva%",str(pin),"%",str(min),"%",str(max),"$!"])
-        try:
-            self.sr.write(cmd_str)
-            self.sr.flush()
-        except:
-            pass
-        rd = self.sr.readline().replace("\r\n","")
-        try:
-            position = int(rd)
-            self.servo_pos[pin] = position
-            return 1
-        except:
-            return 0
-     
-    def detach(self,pin):     
-        cmd_str=''.join(["@svd%",str(position),"$!"])
-        try:
-            self.sr.write(cmd_str)
-            self.sr.flush()
-        except:
-            pass
-        del self.servo_pos[pin]
-
-    def write(self,pin,angle):     
-        cmd_str=''.join(["@svw%",str(position),"%",str(angle),"$!"])
-        try:
-            self.sr.write(cmd_str)
-            self.sr.flush()
-        except:
-            pass
-   
-    def writeMicroseconds(self,pin,uS):     
-        cmd_str=''.join(["@svw%",str(position),"%",str(uS),"$!"])
-        try:
-            self.sr.write(cmd_str)
-            self.sr.flush()
-        except:
-            pass
-   
-    def read(self,pin):
-        if pin not in servo_pos.keys():
-            self.attach(pin) 
-        position = self.servo_pos[pin]
-        cmd_str=''.join(["@svr%",str(position),"$!"])
-        try:
-            self.sr.write(cmd_str)
-            self.sr.flush()
-        except:
-            pass
-        rd = self.sr.readline().replace("\r\n","")
-        try:
-            angle = int(rd)
-            return angle
-        except:
-            return None
-
-class SoftwareSerial(object):
-    """
-    Class for Arduino software serial functionality
-    """
-    def __init__(self,board):
-        self.board=board
-        self.sr = board.sr
-        self.connected = False
-
-    def begin(self,p1,p2,baud):
-        """
-        Create software serial instance on 
-        specified tx,rx pins, at specified baud
-        """
-        cmd_str=''.join(["@ss%",str(p1),"%",str(p2),"%",str(baud),"$!"])
-        try:
-            self.sr.write(cmd_str)
-            self.sr.flush()
-        except:
-            pass
-        response= self.sr.readline().replace("\r\n","")
-        if response == "ss OK":
-            self.connected = True
-            return True
-        else:
-            self.connected = False
-            return False
-        
-    def write(self,data):
-        """
-        sends data to existing software serial instance 
-        using Arduino's 'write' function
-        """
-        if self.connected:
-            cmd_str=''.join(["@sw%",str(data),"$!"])
-            try:
-                self.sr.write(cmd_str)
-                self.sr.flush()
-            except:
-                pass
-            response= self.sr.readline().replace("\r\n","")
-            if response == "ss OK":
-                return True
-        else:
-            return False
-
-    def read(self):
-        """
-        returns first character read from
-        existing software serial instance
-        """
-        if self.connected:
-            cmd_str=''.join(["@sr%$!"])
-            self.sr.write(cmd_str)
-            self.sr.flush()
-            response= self.sr.readline().replace("\r\n","")
-            if response:
-                return response
-        else:
-            return False
-
 class Arduino(object):
     def __init__(self,baud,port="",timeout=2):
         """
@@ -138,16 +11,16 @@ class Arduino(object):
         self.baud = baud
         self.timeout = timeout
         self.ss_connected=False
-        self.SoftwareSerial = SoftwareSerial(self)
-        self.Servos = Servos(self)
         if port == "":
             self.findPort()
         self.sr = serial.Serial(self.port, self.baud,timeout =self.timeout)
         time.sleep(2)
+        self.SoftwareSerial = SoftwareSerial(self)
+        self.Servos = Servos(self)
         
     def findPort(self):
         """
-        Returns first Arduino found
+        Sets port to the first Arduino found
         in system's device list
         """
         for pt in list_ports.comports():
@@ -328,20 +201,154 @@ class Arduino(object):
             return 1 - int(rd)
         except:
             return 0
-          
+
+class Wires(object):            
+    """
+    Class for Arduino wire (i2c) support
+    """
+    def __init__(self, board):
+        self.board = board
+        self.sr = board.sr
+        
+class Servos(object):
+    """
+    Class for Arduino servo support
+    0.03 second delay noted
+    """
+    def __init__(self, board):
+        self.board = board
+        self.sr = board.sr
+        self.servo_pos = {}
+        
+    def attach(self,pin,min = 544, max = 2400):     
+        cmd_str=''.join(["@sva%",str(pin),"%",str(min),"%",str(max),"$!"])
+        try:
+            self.sr.write(cmd_str)
+            self.sr.flush()
+        except:
+            pass
+        rd = self.sr.readline().replace("\r\n","")
+        try:
+            position = int(rd)
+            self.servo_pos[pin] = position
+            return 1
+        except:
+            return 0
+     
+    def detach(self,pin):     
+        cmd_str=''.join(["@svd%",str(position),"$!"])
+        try:
+            self.sr.write(cmd_str)
+            self.sr.flush()
+        except:
+            pass
+        del self.servo_pos[pin]
+
+    def write(self,pin,angle):     
+        position = self.servo_pos[pin]
+        cmd_str=''.join(["@svw%",str(position),"%",str(angle),"$!"])
+        try:
+            self.sr.write(cmd_str)
+            self.sr.flush()
+        except:
+            pass
+   
+    def writeMicroseconds(self,pin,uS):     
+        cmd_str=''.join(["@svw%",str(position),"%",str(uS),"$!"])
+        try:
+            self.sr.write(cmd_str)
+            self.sr.flush()
+        except:
+            pass
+   
+    def read(self,pin):
+        if pin not in self.servo_pos.keys():
+            self.attach(pin) 
+        position = self.servo_pos[pin]
+        cmd_str=''.join(["@svr%",str(position),"$!"])
+        try:
+            self.sr.write(cmd_str)
+            self.sr.flush()
+        except:
+            pass
+        rd = self.sr.readline().replace("\r\n","")
+        try:
+            angle = int(rd)
+            return angle
+        except:
+            return None
+
+class SoftwareSerial(object):
+    """
+    Class for Arduino software serial functionality
+    """
+    def __init__(self,board):
+        self.board=board
+        self.sr = board.sr
+        self.connected = False
+
+    def begin(self,p1,p2,baud):
+        """
+        Create software serial instance on 
+        specified tx,rx pins, at specified baud
+        """
+        cmd_str=''.join(["@ss%",str(p1),"%",str(p2),"%",str(baud),"$!"])
+        try:
+            self.sr.write(cmd_str)
+            self.sr.flush()
+        except:
+            pass
+        response= self.sr.readline().replace("\r\n","")
+        if response == "ss OK":
+            self.connected = True
+            return True
+        else:
+            self.connected = False
+            return False
+        
+    def write(self,data):
+        """
+        sends data to existing software serial instance 
+        using Arduino's 'write' function
+        """
+        if self.connected:
+            cmd_str=''.join(["@sw%",str(data),"$!"])
+            try:
+                self.sr.write(cmd_str)
+                self.sr.flush()
+            except:
+                pass
+            response= self.sr.readline().replace("\r\n","")
+            if response == "ss OK":
+                return True
+        else:
+            return False
+
+    def read(self):
+        """
+        returns first character read from
+        existing software serial instance
+        """
+        if self.connected:
+            cmd_str=''.join(["@sr%$!"])
+            self.sr.write(cmd_str)
+            self.sr.flush()
+            response= self.sr.readline().replace("\r\n","")
+            if response:
+                return response
+        else:
+            return False         
 
 if __name__=="__main__":
     board=Arduino(9600)
     board.Servos.attach(9)
-    time.sleep(.1)
+    board.Servos.write(9,90)
+    time.sleep(1)
     print board.Servos.read(9)
-    board.Servos.write(100)
-    time.sleep(.1)
-    print board.Servos.read(9)
-    board.Servos.write(0)
-    time.sleep(.1)
-    print board.Servos.read(9)
-    board.Servos.write(100)
-    time.sleep(.1)
-    print board.Servos.read(9)
-    board.Servos.write(0)
+    t=time.time()
+    board.Servos.write(9,1)
+    while True:
+        a=board.Servos.read(9)
+        if a == 1:
+            print "time",time.time() - t
+            break

@@ -11,7 +11,7 @@ for Arduino or to simply read and control harware connected to an Arduino from a
 
 Method names within the Python Arduino Command API are designed to be as close as possible to their Arduino programming language counterparts.
 
-## Usage example
+## Simple usage example (LED blink)
 ```python
 #!/usr/bin/env python
 """

@@ -128,53 +128,54 @@ void SV_add(String data) {
     int pin = Str2int(sdata[0]);
     int min = Str2int(sdata[1]);
     int max = Str2int(sdata[2]);
-    int position = -1;
+    int pos = -1;
     for (int i = 0; i<8;i++) {
         if (servo_pins[i] == pin) { //reset in place
-            servos[position].detach();
-            servos[position].attach(pin, min, max);
-            servo_pins[position] = pin;
-            Serial.println(position);
+            servos[pos].detach();
+            servos[pos].attach(pin, min, max);
+            servo_pins[pos] = pin;
+            Serial.println(pos);
             return;
             }
         }
     for (int i = 0; i<8;i++) {
-        if (servo_pins[i] == 0) {position = i;break;} // find spot in servo array
+        if (servo_pins[i] == 0) {pos = i;break;} // find spot in servo array
         }
-    if (position == -1) {;} //no array position available!
+    if (pos == -1) {;} //no array position available!
     else {
-        servos[position].attach(pin, min, max);
-        servo_pins[position] = pin;
-        Serial.println(position);
+        servos[pos].attach(pin, min, max);
+        servo_pins[pos] = pin;
+        Serial.println(pos);
         }
 }
 
 void SV_remove(String data) {
-    int position = Str2int(data);
-    servos[position].detach();
-    servo_pins[position] = 0;
+    int pos = Str2int(data);
+    servos[pos].detach();
+    servo_pins[pos] = 0;
 }
 
 void SV_read(String data) {
-    int position = Str2int(data);
-    angle = servos[position].read();
+    int pos = Str2int(data);
+    int angle;
+    angle = servos[pos].read();
     Serial.println(angle);
 }
 
 void SV_write(String data) {
     String sdata[2];
     split(sdata,2,data,'%');
-    int position = Str2int(sdata[0]);
+    int pos = Str2int(sdata[0]);
     int angle = Str2int(sdata[1]);
-    angle = servos[position].write(angle);
+    servos[pos].write(angle);
 }
 
 void SV_write_ms(String data) {
     String sdata[2];
     split(sdata,2,data,'%');
-    int position = Str2int(sdata[0]);
+    int pos = Str2int(sdata[0]);
     int uS = Str2int(sdata[1]);
-    angle = servos[position].writeMicroseconds(uS);
+    servos[pos].writeMicroseconds(uS);
 }
 
 
