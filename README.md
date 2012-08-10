@@ -3,7 +3,7 @@
 > &copy; 2012-2013 Tristan A. Hearn <tristanhearn@gmail.com>
 > under the MIT License
 
-Based on the Python Arduino Prototyping API by Akash Manohar (https://github.com/HashNuke/Python-Arduino-Prototyping-API/).
+Based in part on the Python Arduino Prototyping API by Akash Manohar (https://github.com/HashNuke/Python-Arduino-Prototyping-API/).
 
 The Python Arduino Command API is a light-weight Python package for communicating with Arduino microcontroller boards. It is written
 using a custom protocol, similar to Firmata (http://firmata.org/wiki/Main_Page). This allows a user to quickly protoype programs
@@ -40,9 +40,9 @@ the functionality of many Arduino demo sketches.
 * Arduino compatible microcontroller with at least 14KB of memory 
 
 #### Setup:
-
+1. Verify that your Arduino board communicates at the baud rate specified in the setup() function in prototype.ino. Change it if necessary.
 1. Load the sketch prototype.ino onto your Arduino board.
-2. Import the arduino library into your python script.
+2. Import the included arduino library into your python script.
 
 ## Methods
 
@@ -85,5 +85,5 @@ be be overwritten by calling this method, both in Python and on the arduino boar
 * Add I2C / TWI function support (Arduino Wire.h commands)
 * Add Servo support (Arduino Servo.h commands)
 * Add tone() / noTone() squarewave generator support for piezo type speakers
-* Make a program which generates 'prototype.ino' with selected Arduino function support, to help reduce memory requirements.
+* Include a wizard which generates 'prototype.ino' with selected serial baud rate and Arduino function support (to help reduce memory requirements).
 * Multi-serial support for Arduino mega (Serial1.read(), etc)
