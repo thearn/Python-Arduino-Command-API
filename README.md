@@ -39,14 +39,6 @@ the functionality of many Arduino demo sketches.
 * PySerial
 * Arduino compatible microcontroller with at least 14KB of memory 
 
-#### To-do list:
-* Add simple reset functionality that zeros out all pin values
-* Add I2C / TWI function support (Arduino Wire.h commands)
-* Add Servo support (Arduino Servo.h commands)
-* Add tone() / noTone() squarewave generator support for piezo type speakers
-* Make a program which generates 'prototype.ino' with selected Arduino function support, to help reduce memory requirements.
-* Multi-serial support for Arduino mega (Serial1.read(), etc)
-
 #### Setup:
 
 1. Load the sketch prototype.ino onto your Arduino board.
@@ -87,3 +79,11 @@ be be overwritten by calling this method, both in Python and on the arduino boar
 **Misc**
 
 * *Arduino.close()* - closes serial connection to the Arduino.
+
+## To-do list:
+* Add simple reset functionality that zeros out all pin values
+* Add I2C / TWI function support (Arduino Wire.h commands)
+* Add Servo support (Arduino Servo.h commands)
+* Add tone() / noTone() squarewave generator support for piezo type speakers
+* Make a program which generates 'prototype.ino' with selected Arduino function support, to help reduce memory requirements.
+* Multi-serial support for Arduino mega (Serial1.read(), etc)
