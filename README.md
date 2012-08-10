@@ -83,21 +83,25 @@ state_2 = board.digitalRead(13) #Will return integer 0
 * *Arduino.pinMode(pin_number, io_mode)* - set pin I/O mode
 * *Arduino.pulseIn(pin_number, state)* - measures a pulse  
 * *Arduino.pulseIn_set(pin_number, state)* - measures a pulse, with preconditioning
+
 ```python
 #Digital mode / pulse example
 board.pinMode(7, "INPUT") #Set digital pin 7 mode to INPUT
 duration = board.pulseIn(7, "HIGH") #Return pulse width measurement on pin 7
 ```
+
 **Analog I/O**
 
 * *Arduino.analogRead(pin_number)* - returns the analog value
 * *Arduino.analogWrite(pin_number, value)* - sets the analog value
+
 ```python
 #Analog I/O examples
 val=board.analogRead(5) #Read value on analog pin 5 (integer 0 to 1023)
 val = val / 4 # scale to 0 - 255
 board.analogWrite(11) #Set analog value (PWM) based on analog measurement
 ```
+
 **Software Serial Functionality**
 
 * *Arduino.SoftwareSerial.begin(ss_rxPin,ss_txPin,ss_device_baud)* - initialize software serial device on 
