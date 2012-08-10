@@ -13,22 +13,22 @@ Method names within the Python Arduino Command API are designed to be as close a
 
 ## Usage example
 ```python
-        #!/usr/bin/env python
-        """
-         Blinks an LED on digital pin 13
-         in 1 second intervals
-        """
-        
-        from arduino import Arduino
-        import time
-        
-        board = Arduino('9600')
-        
-        while True:
-            board.digitalWrite(13, "LOW")
-            time.sleep(1)
-            board.digitalWrite(13, "HIGH")
-            time.sleep(1)
+#!/usr/bin/env python
+"""
+ Blinks an LED on digital pin 13
+ in 1 second intervals
+"""
+
+from arduino import Arduino
+import time
+
+board = Arduino('9600')
+
+while True:
+    board.digitalWrite(13, "LOW")
+    time.sleep(1)
+    board.digitalWrite(13, "HIGH")
+    time.sleep(1)
 ```
 Python-Arduino-Command-API
 For more examples, see arduino/examples.py. This file contains methods which replicate
