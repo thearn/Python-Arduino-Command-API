@@ -12,8 +12,12 @@ for Arduino or to simply read and control harware connected to an Arduino from a
 Method names within the Python Arduino Command API are designed to be as close as possible to their Arduino programming language counterparts.
 
 ## Usage example
+```python
         #!/usr/bin/env python
-        #Example 'Blink' program
+        """
+         Blinks an LED on digital pin 13
+         in 1 second intervals
+        """
         
         from arduino import Arduino
         import time
@@ -25,6 +29,7 @@ Method names within the Python Arduino Command API are designed to be as close a
             time.sleep(1)
             board.digitalWrite(13, "HIGH")
             time.sleep(1)
+```
 Python-Arduino-Command-API
 For more examples, see arduino/examples.py. This file contains methods which replicate
 the functionality of many Arduino demo sketches. 
