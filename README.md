@@ -92,7 +92,6 @@ duration = board.pulseIn(7, "HIGH") #Return pulse width measurement on pin 7
 * *Arduino.analogWrite(pin_number, value)* - sets the analog value
 ```python
 #Analog I/O examples
-board = Arduino("9600") #Initialize
 val=board.analogRead(5) #Read value on analog pin 5 (integer 0 to 1023)
 val = val / 4 # scale to 0 - 255
 board.analogWrite(11) #Set analog value (PWM) based on analog measurement
