@@ -51,12 +51,17 @@ the functionality of many Arduino demo sketches.
 The device name / COM port will be auto-detected. If there are more than one Arduino boards connected,
 the desired COM port can be also be passed:
 ```python
-Arduino(baud, port = "COM3")
+Arduino(baud, port = "COM3") #Windows example
+```
+```python
+Arduino(baud, port = "/dev/tty.usbmodemfa141") #OSX example
 ```
 A time-out for reading from the Arduino can also be specified:
 ```python
 Arduino(baud, timeout = 2)
 ```
+
+*SoftwareSerial()* - A class for handling software serial functionality. Is used internally by the Arduino class, and should not be called directly.
 
 ## Methods
 
