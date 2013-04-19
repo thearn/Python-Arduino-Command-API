@@ -46,7 +46,7 @@ the functionality of many Arduino demo sketches.
 
 #### Setup:
 1. Verify that your Arduino board communicates at the baud rate specified in the 
-setup() function in prototype.ino. Change it if necessary.
+`setup()` function in prototype.ino. Change it if necessary.
 1. Load the sketch prototype.ino onto your Arduino board.
 2. Import the included arduino library into your python script.
 
@@ -73,15 +73,15 @@ board = Arduino("9600", timeout = 2) #Serial reading functions will
 #wait for no more than 2 seconds
 ```
 
-*SoftwareSerial()* - A class for handling software serial functionality. 
+- `SoftwareSerial()` A class for handling software serial functionality. 
 Is used internally by the Arduino class, and should not be called directly.
 
 ## Methods
 
 **Digital I/O**
 
-* *Arduino.digitalWrite(pin_number, state)* - turn digital pin on/off
-* *Arduino.digitalRead(pin_number)* - read state of a digital pin
+- `Arduino.digitalWrite(pin_number, state)` turn digital pin on/off
+- `Arduino.digitalRead(pin_number)` read state of a digital pin
 
 ```python
 #Digital read / write example
@@ -91,9 +91,9 @@ board.digitalWrite(13, "LOW") #Set digital pin 13 voltage
 state_2 = board.digitalRead(13) #Will return integer 0
 ```
 
-* *Arduino.pinMode(pin_number, io_mode)* - set pin I/O mode
-* *Arduino.pulseIn(pin_number, state)* - measures a pulse  
-* *Arduino.pulseIn_set(pin_number, state)* - measures a pulse, with preconditioning
+- `Arduino.pinMode(pin_number, io_mode)` set pin I/O mode
+- `Arduino.pulseIn(pin_number, state)` measures a pulse  
+- `Arduino.pulseIn_set(pin_number, state)` measures a pulse, with preconditioning
 
 ```python
 #Digital mode / pulse example
@@ -103,8 +103,8 @@ duration = board.pulseIn(7, "HIGH") #Return pulse width measurement on pin 7
 
 **Analog I/O**
 
-* *Arduino.analogRead(pin_number)* - returns the analog value
-* *Arduino.analogWrite(pin_number, value)* - sets the analog value
+- `Arduino.analogRead(pin_number)` returns the analog value
+- `Arduino.analogWrite(pin_number, value)` sets the analog value
 
 ```python
 #Analog I/O examples
@@ -116,11 +116,11 @@ board.analogWrite(11) #Set analog value (PWM) based on analog measurement
 **Servo Library Functionality**
 Support is included for up to 8 servos. 
 
-* *Arduino.Servo.attach(pin, min = 544, max = 2400)* - Create servo instance. Only 8 servos can be used at one time. 
-* *Arduino.Servo.read(pin)* - Returns the angle of the servo attached to the specified pin
-* *Arduino.Servo.write(pin, angle)* - Move an attached servo on a pin to a specified angle
-* *Arduino.Servo.writeMicroseconds(pin, uS)* - Write a value in microseconds to the servo on a specified pin
-* *Arduino.Servo.detach(pin)* - Detaches the servo on the specified pin
+- `Arduino.Servo.attach(pin, min = 544, max = 2400)` Create servo instance. Only 8 servos can be used at one time. 
+- `Arduino.Servo.read(pin)` Returns the angle of the servo attached to the specified pin
+- `Arduino.Servo.write(pin, angle)` Move an attached servo on a pin to a specified angle
+- `Arduino.Servo.writeMicroseconds(pin, uS)` Write a value in microseconds to the servo on a specified pin
+- `Arduino.Servo.detach(pin)` Detaches the servo on the specified pin
 
 ```python
 #Servo example
@@ -136,12 +136,12 @@ board.Servo.detach(10) #free pin 10
 
 **Software Serial Functionality**
 
-* *Arduino.SoftwareSerial.begin(ss_rxPin,ss_txPin,ss_device_baud)* - initialize software serial device on 
+- `Arduino.SoftwareSerial.begin(ss_rxPin,ss_txPin,ss_device_baud)` initialize software serial device on 
 specified pins. 
 Only one sofware serial device can be used at a time. Existing software serial instance will 
 be be overwritten by calling this method, both in Python and on the arduino board.
-* *Arduino.SoftwareSerial.write(data)* - send data using the arduino 'write' function to the existing software serial connection.
-* *Arduino.SoftwareSerial.read()* - returns one byte from the existing software serial connection
+- `Arduino.SoftwareSerial.write(data)` send data using the arduino 'write' function to the existing software serial connection.
+- `Arduino.SoftwareSerial.read()` returns one byte from the existing software serial connection
 
 ```python
 #Software serial example
@@ -152,12 +152,12 @@ response_char = board.SoftwareSerial.read() #read response character
 
 **Misc**
 
-* *Arduino.close()* - closes serial connection to the Arduino.
+- Arduino.close()` closes serial connection to the Arduino.
 
 ## To-do list:
-* Expand software serial functionality (print() and println())
-* Add simple reset functionality that zeros out all pin values
-* Add I2C / TWI function support (Arduino Wire.h commands)
-* Add tone() / noTone() squarewave generator support for piezo type speakers
-* Include a wizard which generates 'prototype.ino' with selected serial baud rate and Arduino function support (to help reduce memory requirements).
-* Multi-serial support for Arduino mega (Serial1.read(), etc)
+- Expand software serial functionality (`print()` and `println()`)
+- Add simple reset functionality that zeros out all pin values
+- Add I2C / TWI function support (Arduino `Wire.h` commands)
+- Add `tone()` / `noTone()` squarewave generator support for piezo type speakers
+- Include a wizard which generates 'prototype.ino' with selected serial baud rate and Arduino function support (to help reduce memory requirements).
+- Multi-serial support for Arduino mega (`Serial1.read()`, etc)
