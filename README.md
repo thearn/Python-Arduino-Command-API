@@ -18,7 +18,7 @@ as possible to their Arduino programming language counterparts.
  in 1 second intervals
 """
 
-from arduino import Arduino
+from Arduino import Arduino
 import time
 
 board = Arduino('9600')
