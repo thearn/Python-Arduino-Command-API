@@ -37,7 +37,7 @@ while True:
 
 ## Setup:
 1. Verify that your Arduino board communicates at the baud rate specified in the 
-`setup()` function in `prototype.ino`. Change it there if necessary.
+`setup()` function (line 243) in `prototype.ino`. Change it there if necessary.
 1. Load the sketch `sketches\prototype\prototype.ino` onto your Arduino board, using the Arduino IDE.
 2. Import the included arduino library `Arduino.py` into your python script.
 
