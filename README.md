@@ -151,7 +151,7 @@ response_char = board.SoftwareSerial.read() #read response character
 
 **Misc**
 
-- Arduino.close()` closes serial connection to the Arduino.
+- `Arduino.close()` closes serial connection to the Arduino.
 
 ## To-do list:
 - Expand software serial functionality (`print()` and `println()`)
