@@ -71,6 +71,7 @@ def LCD(tx,baud,ssbaud,message):
 
 
 if __name__=="__main__":
+    Blink(13,9600)
     #LCD(5,9600,9600," test ")
-    adjustBrightness(5,11,9600)
+    #adjustBrightness(5,11,9600)
     #softBlink(11,9600)
