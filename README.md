@@ -47,7 +47,7 @@ For a collection of examples, see `examples.py`. This file contains methods whic
 the functionality of many Arduino demo sketches. 
 
 ## Classes
-*Arduino(baud)* - Set up communication with currently connected and powered 
+- `Arduino(baud)` - Set up communication with currently connected and powered 
 Arduino. 
 ```python
 board = Arduino("9600") #Example
