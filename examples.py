@@ -2,97 +2,75 @@
 from Arduino import Arduino
 import time
 
-class ArduinoExample(object):
-    
-    def __init__(self, baud,port="",timeout=2):
-        self.board = Arduino(baud = baud, port = port, timeout = timeout)
-    
-    def execute(self):
-        pass
-
-class Blink(ArduinoExample):
+def Blink(led_pin,baud):
     """
-    Blinks an LED off and on, using 
-    Arduino's digitalWrite function
-    """    
-    def __init__(self, led_pin, baud,port="",timeout=2):
-        super(Blink, self).__init__(baud, port = port, timeout = timeout)
-        self.led_pin = led_pin
-    
-    def execute(self):
-        self.board.digitalWrite(self.led_pin,"LOW")
-        print self.board.digitalRead(self.led_pin) #confirm LOW (0)
+    Blinks an LED in 1 sec intervals
+    """
+    board = Arduino(baud)
+    while True:
+        board.digitalWrite(led_pin,"LOW")
+        print board.digitalRead(led_pin) #confirm LOW (0)
         time.sleep(1)
-        self.board.digitalWrite(self.led_pin,"HIGH")
-        print self.board.digitalRead(self.led_pin) #confirm HIGH (1)
+        board.digitalWrite(led_pin,"HIGH")
+        print board.digitalRead(led_pin) #confirm HIGH (1)
         time.sleep(1)
 
-class SoftBlink(ArduinoExample):
+def softBlink(led_pin,baud):
     """
     Fades an LED off and on, using 
     Arduino's analogWrite (PWM) function
     """    
-    def __init__(self, led_pin, baud,port="",timeout=2):
-        super(SoftBlink, self).__init__(baud, port = port, timeout = timeout)
-        self.led_pin = led_pin
-        self.i = 0
-        
-    def execute(self):
-        self.i+=1
-        k=self.i%510
+    board=Arduino(baud)
+    i=0
+    while True:
+        i+=1
+        k=i%510
         if k%5==0:
             if k>255:
                 k=510-k
-            self.board.analogWrite(self.led_pin,k)
+            board.analogWrite(led_pin,k)
 
-class AdjustBrightness(ArduinoExample):
+def adjustBrightness(pot_pin,led_pin,baud):
     """
     Adjusts brightness of an LED using a
     potentiometer
     """    
-    def __init__(self, led_pin, pot_pin,baud,port="",timeout=2):
-        super(AdjustBrightness, self).__init__(baud, port = port, 
-                                               timeout = timeout)
-        self.led_pin = led_pin
-        self.pot_pin = pot_pin
-        
-    def execute(self):
+    board=Arduino(baud)
+    while True:
         time.sleep(0.01)
-        val=self.board.analogRead(self.pot_pin)/4
+        val=board.analogRead(pot_pin)/4
         print val
-        self.board.analogWrite(self.led_pin,self.val)
+        board.analogWrite(led_pin,val)
 
-class PingSonar(ArduinoExample):
+
+def PingSonar(pw_pin,baud):
     """
     Gets distance measurement from Ping))) 
     ultrasonic rangefinder connected to pw_pin
-    """  
-    def __init__(self, pw_pin ,baud,port="",timeout=2):
-        super(PingSonar, self).__init__(baud, port = port, timeout = timeout)
-        self.pw_pin = pw_pin
-
-    def execute(self):
-        duration = self.board.pulseIn(self.pw_pin, "HIGH")
+    """
+    board = Arduino(baud)
+    pingPin=pw_pin
+    while True:
+        duration = board.pulseIn(pingPin, "HIGH")
         inches = duration/72./2.
         cent = duration/29./2.
         print inches,"inches"
         time.sleep(0.1)
-   
-class LCD(ArduinoExample):
+        
+def LCD(tx,baud,ssbaud,message):
     """
     Prints to two-line LCD connected to 
     pin tx
     """
-    def __init__(self, tx,ssbaud ,baud,port="",timeout=2):
-        super(LCD, self).__init__(baud, port = port, timeout = timeout)
-        self.tx = tx
-        self.ssbaud = ssbaud
+    board = Arduino(baud)
+    board.SoftwareSerial.begin(0,tx,ssbaud)
+    while True:
+        board.SoftwareSerial.write(" test ") 
 
-    def execute(self, message):
-        self.board.SoftwareSerial.write(message) 
+
 
 
 if __name__=="__main__":
-    app = Blink(9600)
-    while True:
-        app.execute()
+    #LCD(5,9600,9600," test ")
+    adjustBrightness(5,11,9600)
+    #softBlink(11,9600)
