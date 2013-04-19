@@ -68,9 +68,6 @@ board = Arduino("9600", timeout = 2) #Serial reading functions will
 #wait for no more than 2 seconds
 ```
 
-- `SoftwareSerial()` A class for handling software serial functionality. 
-Is used internally by the Arduino class, and should not be called directly.
-
 ## Methods
 
 **Digital I/O**
