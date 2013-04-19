@@ -1,10 +1,6 @@
 # Python Arduino Command API
 
-> &copy; 2012-2013 Tristan A. Hearn <tristanhearn@gmail.com>
-> under the MIT License
-
-Based in part on the Python Arduino Prototyping API by Akash Manohar 
-(https://github.com/HashNuke/Python-Arduino-Prototyping-API/).
+Inspired, in part, by the no-longer updated "Python Arduino Prototyping API" (https://github.com/HashNuke/Python-Arduino-Prototyping-API/).
 
 The Python Arduino Command API is a light-weight Python package for 
 communicating with Arduino microcontroller boards. It is written
