@@ -32,7 +32,7 @@ while True:
 
 ## Requirements:
 * Python 2.3 or higher (Python 3.x not yet tested)
-* PySerial
+* pyserial (`pip install pyserial`)
 * Arduino compatible microcontroller with at least 14KB of memory 
 
 ## Setup:
