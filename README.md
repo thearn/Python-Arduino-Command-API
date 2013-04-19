@@ -5,7 +5,7 @@ communicating with Arduino microcontroller boards from a connected computer, eit
 It is written using a custom protocol, similar to Firmata (http://firmata.org/wiki/Main_Page). 
 
 This allows a user to quickly protoype programs for Arduino using Python code, or to simply read, control, or 
-troubleshoot harware connected to an Arduino board, without ever having to recompile and reload sketches.
+troubleshoot harware connected to an Arduino board without ever having to recompile and reload sketches.
 
 Method names within the Python Arduino Command API are designed to be as close 
 as possible to their Arduino programming language counterparts.
