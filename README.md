@@ -3,13 +3,18 @@
 > &copy; 2012-2013 Tristan A. Hearn <tristanhearn@gmail.com>
 > under the MIT License
 
-Based in part on the Python Arduino Prototyping API by Akash Manohar (https://github.com/HashNuke/Python-Arduino-Prototyping-API/).
+Based in part on the Python Arduino Prototyping API by Akash Manohar 
+(https://github.com/HashNuke/Python-Arduino-Prototyping-API/).
 
-The Python Arduino Command API is a light-weight Python package for communicating with Arduino microcontroller boards. It is written
-using a custom protocol, similar to Firmata (http://firmata.org/wiki/Main_Page). This allows a user to quickly protoype programs
-for Arduino or to simply read and control harware connected to an Arduino from a host computer, without having to reload sketches onto an Arduino board.
+The Python Arduino Command API is a light-weight Python package for 
+communicating with Arduino microcontroller boards. It is written
+using a custom protocol, similar to Firmata (http://firmata.org/wiki/Main_Page). 
+This allows a user to quickly protoype programs
+for Arduino or to simply read and control harware connected to an Arduino from 
+a host computer, without having to reload sketches onto an Arduino board.
 
-Method names within the Python Arduino Command API are designed to be as close as possible to their Arduino programming language counterparts.
+Method names within the Python Arduino Command API are designed to be as close 
+as possible to their Arduino programming language counterparts.
 
 ## Simple usage example (LED blink)
 ```python
@@ -40,17 +45,20 @@ the functionality of many Arduino demo sketches.
 * Arduino compatible microcontroller with at least 14KB of memory 
 
 #### Setup:
-1. Verify that your Arduino board communicates at the baud rate specified in the setup() function in prototype.ino. Change it if necessary.
+1. Verify that your Arduino board communicates at the baud rate specified in the 
+setup() function in prototype.ino. Change it if necessary.
 1. Load the sketch prototype.ino onto your Arduino board.
 2. Import the included arduino library into your python script.
 
 
 ## Classes
-*Arduino(baud)* - Set up communication with currently connected and powered Arduino. 
+*Arduino(baud)* - Set up communication with currently connected and powered 
+Arduino. 
 ```python
 board = Arduino("9600") #Example
 ```
-The device name / COM port of the connected Arduino will be auto-detected. If there are more than one Arduino boards connected,
+The device name / COM port of the connected Arduino will be auto-detected. 
+If there are more than one Arduino boards connected,
 the desired COM port can be also be passed as an optional argument:
 ```python
 board = Arduino("9600", port = "COM3") #Windows example
@@ -58,12 +66,15 @@ board = Arduino("9600", port = "COM3") #Windows example
 ```python
 board = Arduino("9600", port = "/dev/tty.usbmodemfa141") #OSX example
 ```
-A time-out for reading from the Arduino can also be specified as an optional argument:
+A time-out for reading from the Arduino can also be specified as an optional 
+argument:
 ```python
-board = Arduino("9600", timeout = 2) #Serial reading functions will wait for no more than 2 seconds
+board = Arduino("9600", timeout = 2) #Serial reading functions will 
+#wait for no more than 2 seconds
 ```
 
-*SoftwareSerial()* - A class for handling software serial functionality. Is used internally by the Arduino class, and should not be called directly.
+*SoftwareSerial()* - A class for handling software serial functionality. 
+Is used internally by the Arduino class, and should not be called directly.
 
 ## Methods
 

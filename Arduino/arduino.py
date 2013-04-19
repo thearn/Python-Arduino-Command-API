@@ -340,6 +340,7 @@ class SoftwareSerial(object):
             return False         
 
 if __name__=="__main__":
+    # quick test
     board=Arduino(9600)
     board.Servos.attach(9)
     board.Servos.write(9,90)
