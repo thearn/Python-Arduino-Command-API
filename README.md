@@ -21,7 +21,7 @@ as possible to their Arduino programming language counterparts.
 from Arduino import Arduino
 import time
 
-board = Arduino('9600')
+board = Arduino('9600') #plugged in via USB, serial com at rate 9600
 
 while True:
     board.digitalWrite(13, "LOW")
