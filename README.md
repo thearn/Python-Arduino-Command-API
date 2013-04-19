@@ -49,20 +49,25 @@ the functionality of many Arduino demo sketches.
 ## Classes
 - `Arduino(baud)` - Set up communication with currently connected and powered 
 Arduino. 
+
 ```python
 board = Arduino("9600") #Example
 ```
+
 The device name / COM port of the connected Arduino will be auto-detected. 
 If there are more than one Arduino boards connected,
 the desired COM port can be also be passed as an optional argument:
+
 ```python
 board = Arduino("9600", port = "COM3") #Windows example
 ```
 ```python
 board = Arduino("9600", port = "/dev/tty.usbmodemfa141") #OSX example
 ```
+
 A time-out for reading from the Arduino can also be specified as an optional 
 argument:
+
 ```python
 board = Arduino("9600", timeout = 2) #Serial reading functions will 
 #wait for no more than 2 seconds
