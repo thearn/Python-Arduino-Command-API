@@ -43,11 +43,11 @@ while True:
 
 ## Setup:
 1. Verify that your Arduino board communicates at the baud rate specified in the 
-setup() function in prototype.ino. Change it if necessary.
-1. Load the sketch prototype.ino onto your Arduino board.
-2. Import the included arduino library into your python script.
+`setup()` function in `prototype.ino`. Change it there if necessary.
+1. Load the sketch `sketches\prototype\prototype.ino` onto your Arduino board, using the Arduino IDE.
+2. Import the included arduino library `Arduino.py` into your python script.
 
-For examples, see arduino/examples.py. This file contains methods which replicate
+For a collection of examples, see `arduino/examples.py`. This file contains methods which replicate
 the functionality of many Arduino demo sketches. 
 
 ## Classes
