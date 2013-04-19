@@ -35,21 +35,20 @@ while True:
     board.digitalWrite(13, "HIGH")
     time.sleep(1)
 ```
-Python-Arduino-Command-API
-For more examples, see arduino/examples.py. This file contains methods which replicate
-the functionality of many Arduino demo sketches. 
 
-#### Requirements:
+## Requirements:
 * Python 2.3 or higher (Python 3.x not yet tested)
 * PySerial
 * Arduino compatible microcontroller with at least 14KB of memory 
 
-#### Setup:
+## Setup:
 1. Verify that your Arduino board communicates at the baud rate specified in the 
 setup() function in prototype.ino. Change it if necessary.
 1. Load the sketch prototype.ino onto your Arduino board.
 2. Import the included arduino library into your python script.
 
+For examples, see arduino/examples.py. This file contains methods which replicate
+the functionality of many Arduino demo sketches. 
 
 ## Classes
 *Arduino(baud)* - Set up communication with currently connected and powered 
