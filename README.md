@@ -47,7 +47,7 @@ while True:
 1. Load the sketch `sketches\prototype\prototype.ino` onto your Arduino board, using the Arduino IDE.
 2. Import the included arduino library `Arduino.py` into your python script.
 
-For a collection of examples, see `arduino/examples.py`. This file contains methods which replicate
+For a collection of examples, see `examples.py`. This file contains methods which replicate
 the functionality of many Arduino demo sketches. 
 
 ## Classes
