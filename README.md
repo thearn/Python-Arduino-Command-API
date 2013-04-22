@@ -32,16 +32,17 @@ while True:
 
 ## Requirements:
 * Python 2.3 or higher (Python 3.x not yet tested)
-* pyserial (`pip install pyserial`)
+* pyserial 2.6 or higher
 * Arduino compatible microcontroller with at least 14KB of memory 
 
 ## Setup:
-1. Verify that your Arduino board communicates at the baud rate specified in the 
+1. Run `setup.py build install` to install the library
+2. Verify that your Arduino board communicates at the baud rate specified in the 
 `setup()` function (line 243) in `prototype.ino`. Change it there if necessary.
-2. Load the `prototype.ino` sketch onto your Arduino board, using the Arduino IDE.
-3. Set up some kind of serial I/O communication between the Arduino board and your computer (via physical USB cable, 
+3. Load the `prototype.ino` sketch onto your Arduino board, using the Arduino IDE.
+4. Set up some kind of serial I/O communication between the Arduino board and your computer (via physical USB cable, 
 bluetooth, xbee, etc + associated drivers)
-4. Import the included arduino library `Arduino.py` into your python script.
+5. Add `from Arduino import Arduino` into your python script to communicate with your Arduino
 
 For a collection of examples, see `examples.py`. This file contains methods which replicate
 the functionality of many Arduino demo sketches. 
