@@ -1,8 +1,13 @@
-
 # IDE #
 #######
 *.wpr
 *.wpu
+
+# Directories #
+###############
+bin/
+dist/
+*.egg-info
 
 # Compiled source #
 ###################
@@ -12,6 +17,7 @@
 *.exe
 *.o
 *.so
+*.pyc
 
 # Packages #
 ############
@@ -25,6 +31,7 @@
 *.rar
 *.tar
 *.zip
+*.egg
 
 # Logs and databases #
 ######################
