@@ -5,7 +5,7 @@
 
 # Directories #
 ###############
-bin/
+build/
 dist/
 *.egg-info
 
