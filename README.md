@@ -1,10 +1,12 @@
 # Python Arduino Command API
 
 The Python Arduino Command API is a light-weight Python library for 
-communicating with Arduino microcontroller boards from a connected computer using standard serial I/O, either physically 
+communicating with [Arduino microcontroller boards](http://www.arduino.cc/) from a connected computer using 
+standard serial I/O, either physically 
 or wirelessly. It is written using a custom protocol, similar to Firmata (http://firmata.org/wiki/Main_Page). 
 
-This allows a user to quickly protoype programs for Arduino using Python code, or to simply read/control/troubleshoot/experiment
+This allows a user to quickly protoype programs for Arduino using Python code, or to 
+simply read/control/troubleshoot/experiment
 with harware connected to an Arduino board without ever having to recompile and reload sketches to the board itself.
 
 Method names within the Python Arduino Command API are designed to be as close 
@@ -31,9 +33,9 @@ while True:
 ```
 
 ## Requirements:
-* Python 2.3 or higher (Python 3.x not yet tested)
-* pyserial 2.6 or higher
-* Arduino compatible microcontroller with at least 14KB of memory 
+- Python 2.3 or higher (Python 3.x not yet tested, but would probably work)
+- [pyserial](http://pyserial.sourceforge.net/) 2.6 or higher
+- Arduino compatible microcontroller with at least 14KB of memory 
 
 ## Setup:
 1. Run `setup.py build install` to install the library
@@ -134,7 +136,8 @@ board.Servo.detach(9) #free pin 9
 specified pins. 
 Only one sofware serial device can be used at a time. Existing software serial instance will 
 be be overwritten by calling this method, both in Python and on the arduino board.
-- `Arduino.SoftwareSerial.write(data)` send data using the arduino 'write' function to the existing software serial connection.
+- `Arduino.SoftwareSerial.write(data)` send data using the arduino 'write' function to the existing software 
+serial connection.
 - `Arduino.SoftwareSerial.read()` returns one byte from the existing software serial connection
 
 ```python
@@ -153,5 +156,6 @@ response_char = board.SoftwareSerial.read() #read response character
 - Add simple reset functionality that zeros out all pin values
 - Add I2C / TWI function support (Arduino `Wire.h` commands)
 - Add `tone()` / `noTone()` squarewave generator support for piezo type speakers
-- Include a wizard which generates 'prototype.ino' with selected serial baud rate and Arduino function support (to help reduce memory requirements).
+- Include a wizard which generates 'prototype.ino' with selected serial baud rate and Arduino function support 
+(to help reduce memory requirements).
 - Multi-serial support for Arduino mega (`Serial1.read()`, etc)
