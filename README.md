@@ -155,7 +155,7 @@ response_char = board.SoftwareSerial.read() #read response character
 - Expand software serial functionality (`print()` and `println()`)
 - Add simple reset functionality that zeros out all pin values
 - Add I2C / TWI function support (Arduino `Wire.h` commands)
-- Add `tone()` / `noTone()` squarewave generator support for piezo type speakers
+- <del> Add `tone()` / `noTone()` squarewave generator support for piezo type speakers</del> currently testing code for this (thanks to Sjoerd Dirk Meijer.)
 - Include a wizard which generates 'prototype.ino' with selected serial baud rate and Arduino function support 
 (to help reduce memory requirements).
 - Multi-serial support for Arduino mega (`Serial1.read()`, etc)
