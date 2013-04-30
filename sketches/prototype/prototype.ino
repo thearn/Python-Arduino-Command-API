@@ -24,6 +24,35 @@ void split(String results[], int len, String input, char spChar) {
   }
 }
 
+void Version(){
+  Serial.println("version");
+}
+
+void Tone(String data){
+  int idx = data.indexOf('%');
+  int len = Str2int(data.substring(0,idx));
+  String data2 = data.substring(idx+1);
+  int idx2 = data2.indexOf('%');
+  int pin = Str2int(data2.substring(0,idx2));
+  String data3 = data2.substring(idx2+1);
+  String melody[len*2];
+  split(melody,len*2,data3,'%');
+
+  for (int thisNote = 0; thisNote < len; thisNote++) {
+    int noteDuration = 1000/Str2int(melody[thisNote+len]);
+    int note = Str2int(melody[thisNote]);
+    tone(pin, note, noteDuration);
+    int pause = noteDuration * 1.30;
+    delay(pause);
+    noTone(pin);
+  }
+} 
+
+void ToneNo(String data){
+  int pin = Str2int(data);
+  noTone(pin);
+} 
+
 void DigitalHandler(int mode, String data){
       int pin = Str2int(data);
     if(mode<=0){ //read
@@ -235,7 +264,16 @@ void SerialParser(void) {
   }      
   else if (cmd == "svd") {
       SV_remove(data);   
-  }       
+  } 
+  else if (cmd == "version") {
+      Version();   
+  }
+  else if (cmd == "to") {
+      Tone(data);   
+  } 
+  else if (cmd == "nto") {
+      ToneNo(data);   
+  }  
 }
 
 
