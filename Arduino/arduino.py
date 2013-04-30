@@ -273,7 +273,7 @@ class Arduino(object):
         inputs:
             pin: digital pin number for playback
             melody: list of tones
-            durations: list of duration
+            durations: list of duration (4=quarter note, 8=eighth note, etc.)
         length of melody should be of same
         length as length of duration
 
