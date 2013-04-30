@@ -12,6 +12,8 @@ with harware connected to an Arduino board without ever having to recompile and 
 Method names within the Python Arduino Command API are designed to be as close 
 as possible to their Arduino programming language counterparts.
 
+Checkout the 'dev' branch for recent experimental support of some features, such as `tone()`.
+
 ## Simple usage example (LED blink)
 ```python
 #!/usr/bin/env python
