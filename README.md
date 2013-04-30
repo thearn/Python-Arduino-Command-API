@@ -159,3 +159,4 @@ response_char = board.SoftwareSerial.read() #read response character
 - Include a wizard which generates 'prototype.ino' with selected serial baud rate and Arduino function support 
 (to help reduce memory requirements).
 - Multi-serial support for Arduino mega (`Serial1.read()`, etc)
+- (sdmeijer) Add capacitive sensors (http://playground.arduino.cc/Code/CapacitiveSensor)
