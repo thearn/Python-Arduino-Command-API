@@ -1,9 +1,34 @@
 #!/usr/bin/env python
 from serial.tools import list_ports
 import serial, time
+##SDM
+import platform
+if platform.system() == 'Windows':
+    import _winreg as winreg
+if platform.system() == 'Linux':
+    import glob
+import itertools
 
+def enumerate_serial_ports():
+    """ Uses the Win32 registry to return a iterator of serial 
+        (COM) ports existing on this computer.
+    """
+    path = 'HARDWARE\\DEVICEMAP\\SERIALCOMM'
+    try:
+        key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, path)
+    except WindowsError:
+        raise IterationError
+
+    for i in itertools.count():
+        try:
+            val = winreg.EnumValue(key, i)
+            yield (str(val[1]))#, str(val[0]))
+        except EnvironmentError:
+            break
+##SDM
+    
 class Arduino(object):
-    def __init__(self,baud,port="",timeout=2):
+    def __init__(self,baud=9600,port="",timeout=2):
         """
         Initializes serial communication with Arduino.
         Attempts to self-select COM port, if not specified.
@@ -11,10 +36,38 @@ class Arduino(object):
         self.baud = baud
         self.timeout = timeout
         self.ss_connected=False
-        if port == "":
-            self.findPort()
-        self.sr = serial.Serial(self.port, self.baud,timeout =self.timeout)
-        time.sleep(2)
+##SDM
+        self.port = port
+        if self.port == "":
+            if platform.system() == 'Windows':
+                ports = enumerate_serial_ports()
+            if platform.system() == 'Linux':
+                ports = glob.glob("/dev/ttyUSB*")
+            for p in ports:
+                print 'Found ', p
+                try:
+                    print 'Testing ', p
+                    self.sr = serial.Serial(p, self.baud,timeout=self.timeout)
+                    time.sleep(2)
+                    cmd_str=''.join(["@version%$!"])
+                    try:
+                        self.sr.write(cmd_str)
+                        self.sr.flush()
+                    except:
+                        pass
+                    version = self.sr.readline().replace("\r\n","")
+                    #print version
+                    if version != 'version':
+                        raise Exception('This is not a Shrimp/Arduino!')
+                    self.port = p
+                    print p, 'passed'
+                    break
+                except Exception, e:
+                    print "Exception: ", e
+                    pass
+##SDM            
+        #--self.sr = serial.Serial(self.port, self.baud,timeout =self.timeout)
+        #--time.sleep(2)
         self.SoftwareSerial = SoftwareSerial(self)
         self.Servos = Servos(self)
         
@@ -134,7 +187,7 @@ class Arduino(object):
         except:
             return -1    
     
-    def pulseIn_set(self,pin,val):
+    def pulseIn_set(self,pin,val,numTrials=5):
         """
         Sets a digital pin value, then reads the response
         as a pulse width.
@@ -144,8 +197,9 @@ class Arduino(object):
            pin: pin number for pulse measurement
            val: "HIGH" or "LOW". Pulse is measured
                 when this state is detected
+           numTrials: number of trials (for an average)
         returns:
-           duration : pulse length measurement
+           duration : an average of pulse length measurements
            
         This method will automatically toggle
         I/O modes on the pin and precondition the 
@@ -167,14 +221,25 @@ class Arduino(object):
         else:
             pin_ = pin
         cmd_str=''.join(["@ps%",str(pin_),"$!"])
+        durations = []
+        for s in range(numTrials):
+            try:
+                self.sr.write(cmd_str)
+                self.sr.flush()   
+            except:
+                pass
+            rd = self.sr.readline().replace("\r\n","")
+            if rd.isdigit() == True:
+                if (int(rd) > 1) == True:
+                    durations.append(int(rd))
+        #print durations
+        if len(durations) > 0:
+            duration = int(sum(durations)) / int(len(durations))
+        else:
+            duration = None
+            
         try:
-            self.sr.write(cmd_str)
-            self.sr.flush()   
-        except:
-            pass
-        rd = self.sr.readline().replace("\r\n","")
-        try:
-            return float(rd)
+            return float(duration)
         except:
             return -1
         
@@ -202,6 +267,12 @@ class Arduino(object):
         except:
             return 0
 
+##SDM
+class Shrimp(Arduino):
+    def __init__(self):
+        Arduino.__init__(self)
+##SDM
+        
 class Wires(object):            
     """
     Class for Arduino wire (i2c) support
@@ -339,17 +410,17 @@ class SoftwareSerial(object):
         else:
             return False         
 
-if __name__=="__main__":
+##if __name__=="__main__":
     # quick test
-    board=Arduino(9600)
-    board.Servos.attach(9)
-    board.Servos.write(9,90)
-    time.sleep(1)
-    print board.Servos.read(9)
-    t=time.time()
-    board.Servos.write(9,1)
-    while True:
-        a=board.Servos.read(9)
-        if a == 1:
-            print "time",time.time() - t
-            break
+##    board=Arduino(9600, 'COM9')
+##    board.Servos.attach(9)
+##    board.Servos.write(9,90)
+##    time.sleep(1)
+##    print board.Servos.read(9)
+##    t=time.time()
+##    board.Servos.write(9,1)
+##    while True:
+##        a=board.Servos.read(9)
+##        if a == 1:
+##            print "time",time.time() - t
+##            break
