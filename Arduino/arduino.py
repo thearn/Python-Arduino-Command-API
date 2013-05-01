@@ -70,6 +70,7 @@ class Arduino(object):
         #--time.sleep(2)
         self.SoftwareSerial = SoftwareSerial(self)
         self.Servos = Servos(self)
+        self.sr.flush()
         
     def findPort(self):
         """
@@ -305,14 +306,14 @@ class Arduino(object):
                     d = str(durations[duration])
                     cmd_str = cmd_str+d+"%"
                 cmd_str = cmd_str[:-1]+"$!"
-                print cmd_str
+                #print cmd_str
                 try:
                     self.sr.write(cmd_str)
                     self.sr.flush()
                 except:
                     pass
                 cmd_str=''.join(["@nto%",str(pin),"$!"])
-                print cmd_str
+                #print cmd_str
                 try:
                     self.sr.write(cmd_str)
                     self.sr.flush()
