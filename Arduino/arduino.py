@@ -323,6 +323,21 @@ class Arduino(object):
         else:
             return -1
 
+    def capacitivePin(self, pin):
+        '''
+        Input:
+            pin (int): pin to use as capacitive sensor
+
+        Use it in a loop!
+        '''
+        cmd_str="@cap%"+str(pin)+"$!"
+        self.sr.write(cmd_str)
+        rd = self.sr.readline().replace("\r\n","")
+        if rd.isdigit() == True:
+            #print "rd: " + str(rd)
+            return int(rd)
+            
+
 ##SDM
 class Shrimp(Arduino):
     def __init__(self):
