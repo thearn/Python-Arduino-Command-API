@@ -329,6 +329,12 @@ class Arduino(object):
             pin (int): pin to use as capacitive sensor
 
         Use it in a loop!
+        DO NOT CONNECT ANY ACTIVE DRIVER TO THE USED PIN !
+
+        the pin is toggled to output mode to discharge the port,
+        and if connected to a voltage source,
+        will short circuit the pin, potentially damaging
+        the Arduino/Shrimp and any hardware attached to the pin. 
         '''
         cmd_str="@cap%"+str(pin)+"$!"
         self.sr.write(cmd_str)
