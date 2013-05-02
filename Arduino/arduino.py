@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 from serial.tools import list_ports
 import serial, time
-##SDM
 import platform
 if platform.system() == 'Windows':
     import _winreg as winreg
 if platform.system() == 'Linux':
     import glob
 import itertools
+
 
 def enumerate_serial_ports():
     """ Uses the Win32 registry to return a iterator of serial 
@@ -25,7 +25,7 @@ def enumerate_serial_ports():
             yield (str(val[1]))#, str(val[0]))
         except EnvironmentError:
             break
-##SDM
+
     
 class Arduino(object):
     def __init__(self,baud=9600,port="",timeout=2):
@@ -36,7 +36,6 @@ class Arduino(object):
         self.baud = baud
         self.timeout = timeout
         self.ss_connected=False
-##SDM
         self.port = port
         if self.port == "":
             if platform.system() == 'Windows':
@@ -59,12 +58,10 @@ class Arduino(object):
                 except Exception, e:
                     print "Exception: ", e
                     pass
-##SDM            
-        #--self.sr = serial.Serial(self.port, self.baud,timeout =self.timeout)
-        #--time.sleep(2)
         self.SoftwareSerial = SoftwareSerial(self)
         self.Servos = Servos(self)
         self.sr.flush()
+
 
     def version(self):
         cmd_str=''.join(["@version%$!"])
@@ -86,6 +83,7 @@ class Arduino(object):
             if ("FTDIBUS" in pt[-1]) or ("usbserial" in pt[-1]):
                 self.port = pt[0]
                 return
+
        
     def digitalWrite(self,pin,val):
         """
@@ -107,6 +105,7 @@ class Arduino(object):
         except:
             pass
 
+
     def analogWrite(self,pin,val):
         """
         Sends analogWrite pwm command
@@ -126,6 +125,7 @@ class Arduino(object):
             self.sr.flush()
         except:
             pass
+
 
     def analogRead(self,pin):
         """
@@ -166,6 +166,7 @@ class Arduino(object):
             self.sr.flush()    
         except:
             pass
+
     
     def pulseIn(self,pin,val):
         """
@@ -175,7 +176,6 @@ class Arduino(object):
            pin: pin number for pulse measurement
         returns:
            duration : pulse length measurement
-           
         """
         if val=="LOW":
             pin_ = -pin
@@ -192,6 +192,7 @@ class Arduino(object):
             return float(rd)
         except:
             return -1    
+
     
     def pulseIn_set(self,pin,val,numTrials=5):
         """
@@ -238,7 +239,6 @@ class Arduino(object):
             if rd.isdigit() == True:
                 if (int(rd) > 1) == True:
                     durations.append(int(rd))
-        #print durations
         if len(durations) > 0:
             duration = int(sum(durations)) / int(len(durations))
         else:
@@ -248,10 +248,12 @@ class Arduino(object):
             return float(duration)
         except:
             return -1
+
         
     def close(self):
         self.sr.flush()
         self.sr.close() 
+
     
     def digitalRead(self,pin):
         """
@@ -273,6 +275,7 @@ class Arduino(object):
             return 1 - int(rd)
         except:
             return 0
+
 
     def Melody(self, pin, melody, durations):
         """
@@ -312,14 +315,12 @@ class Arduino(object):
                     d = str(durations[duration])
                     cmd_str = cmd_str+d+"%"
                 cmd_str = cmd_str[:-1]+"$!"
-                #print cmd_str
                 try:
                     self.sr.write(cmd_str)
                     self.sr.flush()
                 except:
                     pass
                 cmd_str=''.join(["@nto%",str(pin),"$!"])
-                #print cmd_str
                 try:
                     self.sr.write(cmd_str)
                     self.sr.flush()
@@ -329,6 +330,7 @@ class Arduino(object):
                 return -1
         else:
             return -1
+
 
     def capacitivePin(self, pin):
         '''
@@ -347,15 +349,13 @@ class Arduino(object):
         self.sr.write(cmd_str)
         rd = self.sr.readline().replace("\r\n","")
         if rd.isdigit() == True:
-            #print "rd: " + str(rd)
             return int(rd)
             
 
-##SDM
 class Shrimp(Arduino):
     def __init__(self):
         Arduino.__init__(self)
-##SDM
+
         
 class Wires(object):            
     """
@@ -364,6 +364,7 @@ class Wires(object):
     def __init__(self, board):
         self.board = board
         self.sr = board.sr
+
         
 class Servos(object):
     """
@@ -374,6 +375,7 @@ class Servos(object):
         self.board = board
         self.sr = board.sr
         self.servo_pos = {}
+
         
     def attach(self,pin,min = 544, max = 2400):     
         cmd_str=''.join(["@sva%",str(pin),"%",str(min),"%",str(max),"$!"])
@@ -389,6 +391,7 @@ class Servos(object):
             return 1
         except:
             return 0
+
      
     def detach(self,pin):     
         cmd_str=''.join(["@svd%",str(position),"$!"])
@@ -399,6 +402,7 @@ class Servos(object):
             pass
         del self.servo_pos[pin]
 
+
     def write(self,pin,angle):     
         position = self.servo_pos[pin]
         cmd_str=''.join(["@svw%",str(position),"%",str(angle),"$!"])
@@ -407,6 +411,7 @@ class Servos(object):
             self.sr.flush()
         except:
             pass
+
    
     def writeMicroseconds(self,pin,uS):     
         cmd_str=''.join(["@svw%",str(position),"%",str(uS),"$!"])
@@ -415,6 +420,7 @@ class Servos(object):
             self.sr.flush()
         except:
             pass
+
    
     def read(self,pin):
         if pin not in self.servo_pos.keys():
@@ -433,6 +439,7 @@ class Servos(object):
         except:
             return None
 
+
 class SoftwareSerial(object):
     """
     Class for Arduino software serial functionality
@@ -441,6 +448,7 @@ class SoftwareSerial(object):
         self.board=board
         self.sr = board.sr
         self.connected = False
+
 
     def begin(self,p1,p2,baud):
         """
@@ -460,6 +468,7 @@ class SoftwareSerial(object):
         else:
             self.connected = False
             return False
+
         
     def write(self,data):
         """
@@ -479,6 +488,7 @@ class SoftwareSerial(object):
         else:
             return False
 
+
     def read(self):
         """
         returns first character read from
@@ -493,18 +503,3 @@ class SoftwareSerial(object):
                 return response
         else:
             return False         
-
-##if __name__=="__main__":
-    # quick test
-##    board=Arduino(9600, 'COM9')
-##    board.Servos.attach(9)
-##    board.Servos.write(9,90)
-##    time.sleep(1)
-##    print board.Servos.read(9)
-##    t=time.time()
-##    board.Servos.write(9,1)
-##    while True:
-##        a=board.Servos.read(9)
-##        if a == 1:
-##            print "time",time.time() - t
-##            break
