@@ -45,18 +45,12 @@ class Arduino(object):
                 ports = glob.glob("/dev/ttyUSB*")
             for p in ports:
                 print 'Found ', p
+                version = None
                 try:
                     print 'Testing ', p
                     self.sr = serial.Serial(p, self.baud,timeout=self.timeout)
                     time.sleep(2)
-                    cmd_str=''.join(["@version%$!"])
-                    try:
-                        self.sr.write(cmd_str)
-                        self.sr.flush()
-                    except:
-                        pass
-                    version = self.sr.readline().replace("\r\n","")
-                    #print version
+                    version = self.version()
                     if version != 'version':
                         raise Exception('This is not a Shrimp/Arduino!')
                     self.port = p
@@ -71,6 +65,17 @@ class Arduino(object):
         self.SoftwareSerial = SoftwareSerial(self)
         self.Servos = Servos(self)
         self.sr.flush()
+
+    def version(self):
+        cmd_str=''.join(["@version%$!"])
+        try:
+            self.sr.write(cmd_str)
+            self.sr.flush()
+        except:
+            pass
+        version = self.sr.readline().replace("\r\n","")
+        return version
+
         
     def findPort(self):
         """
@@ -245,6 +250,7 @@ class Arduino(object):
             return -1
         
     def close(self):
+        self.sr.flush()
         self.sr.close() 
     
     def digitalRead(self,pin):
