@@ -12,7 +12,10 @@ class Arduino(object):
         self.timeout = timeout
         self.ss_connected=False
         if port == "":
-            self.findPort()
+            self.port = self.findPort()
+        else:
+            self.port = port
+        assert self.port
         self.sr = serial.Serial(self.port, self.baud,timeout =self.timeout)
         time.sleep(2)
         self.SoftwareSerial = SoftwareSerial(self)
@@ -25,9 +28,9 @@ class Arduino(object):
         """
         for pt in list_ports.comports():
             if ("FTDIBUS" in pt[-1]) or ("usbserial" in pt[-1]):
-                self.port = pt[0]
-                return
-       
+                return pt[0]
+        return None
+
     def digitalWrite(self,pin,val):
         """
         Sends digitalWrite command
