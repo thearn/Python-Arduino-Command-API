@@ -155,7 +155,6 @@ response_char = board.SoftwareSerial.read() #read response character
 - Expand software serial functionality (`print()` and `println()`)
 - Add simple reset functionality that zeros out all pin values
 - Add I2C / TWI function support (Arduino `Wire.h` commands)
--(sdmeijer) Add Python-code for Tone/NoTone.</del>
 - Include a wizard which generates 'prototype.ino' with selected serial baud rate and Arduino function support 
 (to help reduce memory requirements).
 - Multi-serial support for Arduino mega (`Serial1.read()`, etc)
