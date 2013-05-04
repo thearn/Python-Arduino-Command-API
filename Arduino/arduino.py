@@ -4,7 +4,7 @@ import serial, time
 import platform
 if platform.system() == 'Windows':
     import _winreg as winreg
-if platform.system() == 'Linux':
+else:
     import glob
 import itertools
 
@@ -38,26 +38,7 @@ class Arduino(object):
         self.ss_connected=False
         self.port = port
         if self.port == "":
-            if platform.system() == 'Windows':
-                ports = enumerate_serial_ports()
-            if platform.system() == 'Linux':
-                ports = glob.glob("/dev/ttyUSB*")
-            for p in ports:
-                print 'Found ', p
-                version = None
-                try:
-                    print 'Testing ', p
-                    self.sr = serial.Serial(p, self.baud,timeout=self.timeout)
-                    time.sleep(2)
-                    version = self.version()
-                    if version != 'version':
-                        raise Exception('This is not a Shrimp/Arduino!')
-                    self.port = p
-                    print p, 'passed'
-                    break
-                except Exception, e:
-                    print "Exception: ", e
-                    pass
+            self.findPort()
         self.SoftwareSerial = SoftwareSerial(self)
         self.Servos = Servos(self)
         self.sr.flush()
@@ -79,10 +60,26 @@ class Arduino(object):
         Sets port to the first Arduino found
         in system's device list
         """
-        for pt in list_ports.comports():
-            if ("FTDIBUS" in pt[-1]) or ("usbserial" in pt[-1]):
-                self.port = pt[0]
-                return
+        if platform.system() == 'Windows':
+            ports = enumerate_serial_ports()
+        else:
+            ports = glob.glob("/dev/ttyUSB*")
+        for p in ports:
+            print 'Found ', p
+            version = None
+            try:
+                print 'Testing ', p
+                self.sr = serial.Serial(p, self.baud,timeout=self.timeout)
+                time.sleep(2)
+                version = self.version()
+                if version != 'version':
+                    raise Exception('This is not a Shrimp/Arduino!')
+                self.port = p
+                print p, 'passed'
+                break
+            except Exception, e:
+                print "Exception: ", e
+                pass
 
        
     def digitalWrite(self,pin,val):
