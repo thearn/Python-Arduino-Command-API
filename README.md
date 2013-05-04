@@ -35,7 +35,7 @@ while True:
 ## Requirements:
 - [Python](http://python.org/) 2.3 or higher (Python 3.x not yet tested, but would probably work)
 - [pyserial](http://pyserial.sourceforge.net/) 2.6 or higher
-- Any [Arduino compatible microcontroller](https://www.sparkfun.com/) with at least 14KB of flash memory 
+- Any [Arduino compatible microcontroller](https://www.sparkfun.com/categories/242) with at least 14KB of flash memory 
 
 ## Setup:
 1. Run `setup.py build install` to install the library
