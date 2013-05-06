@@ -12,8 +12,6 @@ with harware connected to an Arduino board without ever having to recompile and 
 Method names within the Python Arduino Command API are designed to be as close 
 as possible to their Arduino programming language counterparts.
 
-Checkout the 'dev' branch for recent experimental support of some features, such as `tone()`.
-
 ## Simple usage example (LED blink)
 ```python
 #!/usr/bin/env python
@@ -37,7 +35,7 @@ while True:
 ## Requirements:
 - [Python](http://python.org/) 2.3 or higher (Python 3.x not yet tested, but would probably work)
 - [pyserial](http://pyserial.sourceforge.net/) 2.6 or higher
-- Any [Arduino compatible microcontroller](https://www.sparkfun.com/) with at least 14KB of flash memory 
+- Any [Arduino compatible microcontroller](https://www.sparkfun.com/categories/242) with at least 14KB of flash memory 
 
 ## Setup:
 1. Run `setup.py build install` to install the library
@@ -157,10 +155,7 @@ response_char = board.SoftwareSerial.read() #read response character
 - Expand software serial functionality (`print()` and `println()`)
 - Add simple reset functionality that zeros out all pin values
 - Add I2C / TWI function support (Arduino `Wire.h` commands)
-- <del> Add `tone()` / `noTone()` squarewave generator support for piezo type speakers currently testing code for this (thanks to Sjoerd Dirk Meijer.)
--(sdmeijer) Add Python-code for Tone/NoTone.</del>
 - Include a wizard which generates 'prototype.ino' with selected serial baud rate and Arduino function support 
 (to help reduce memory requirements).
 - Multi-serial support for Arduino mega (`Serial1.read()`, etc)
-- <del>(sdmeijer) Add capacitive sensors (http://playground.arduino.cc/Code/CapacitiveSensor)</del>
 
