@@ -28,7 +28,7 @@ def enumerate_serial_ports():
 
     
 class Arduino(object):
-    def __init__(self,baud=9600,port="",timeout=2):
+    def __init__(self,baud=9600,port=None,timeout=2):
         """
         Initializes serial communication with Arduino.
         Attempts to self-select COM port, if not specified.
@@ -37,8 +37,10 @@ class Arduino(object):
         self.timeout = timeout
         self.ss_connected=False
         self.port = port
-        if self.port == "":
+        if not self.port:
             self.findPort()
+        else:
+            self.sr = serial.Serial(self.port, self.baud,timeout =self.timeout)
         self.SoftwareSerial = SoftwareSerial(self)
         self.Servos = Servos(self)
         self.sr.flush()
@@ -62,6 +64,8 @@ class Arduino(object):
         """
         if platform.system() == 'Windows':
             ports = enumerate_serial_ports()
+        elif platform.system() == 'Darwin':
+            ports = [i[0] for i in list_ports.comports()]
         else:
             ports = glob.glob("/dev/ttyUSB*")
         for p in ports:
