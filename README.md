@@ -40,7 +40,7 @@ while True:
 ## Setup:
 1. Run `setup.py build install` to install the library
 2. Verify that your Arduino board communicates at the baud rate specified in the 
-`setup()` function (line 243) in `prototype.ino`. Change it there if necessary.
+`setup()` function (line 348) in `prototype.ino`. Change it there if necessary.
 3. Load the `prototype.ino` sketch onto your Arduino board, using the Arduino IDE.
 4. Set up some kind of serial I/O communication between the Arduino board and your computer (via physical USB cable, 
 bluetooth, xbee, etc + associated drivers)
