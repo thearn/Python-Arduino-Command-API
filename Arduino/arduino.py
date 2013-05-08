@@ -380,18 +380,19 @@ class Servos(object):
         
     def attach(self,pin,min = 544, max = 2400):     
         cmd_str=''.join(["@sva%",str(pin),"%",str(min),"%",str(max),"$!"])
-        try:
+        
+        while True:
             self.sr.write(cmd_str)
             self.sr.flush()
-        except:
-            pass
-        rd = self.sr.readline().replace("\r\n","")
-        try:
-            position = int(rd)
-            self.servo_pos[pin] = position
-            return 1
-        except:
-            return 0
+                
+            rd = self.sr.readline().replace("\r\n","")
+            if rd:
+                break
+            else:
+                print "trying to attach servo to pin",pin
+        position = int(rd)
+        self.servo_pos[pin] = position
+        return 1
 
      
     def detach(self,pin):     
@@ -407,20 +408,16 @@ class Servos(object):
     def write(self,pin,angle):     
         position = self.servo_pos[pin]
         cmd_str=''.join(["@svw%",str(position),"%",str(angle),"$!"])
-        try:
-            self.sr.write(cmd_str)
-            self.sr.flush()
-        except:
-            pass
+        
+        self.sr.write(cmd_str)
+        self.sr.flush()
 
    
     def writeMicroseconds(self,pin,uS):     
         cmd_str=''.join(["@svw%",str(position),"%",str(uS),"$!"])
-        try:
-            self.sr.write(cmd_str)
-            self.sr.flush()
-        except:
-            pass
+        
+        self.sr.write(cmd_str)
+        self.sr.flush()
 
    
     def read(self,pin):

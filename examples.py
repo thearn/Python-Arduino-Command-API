@@ -71,7 +71,12 @@ def LCD(tx,baud,ssbaud,message, port=""):
 
 
 if __name__=="__main__":
-    Blink(13,9600)
-    #LCD(5,9600,9600," test ")
-    #adjustBrightness(5,11,9600)
-    #softBlink(11,9600)
+    a = Arduino('9600', port="/dev/tty.usbserial-A700e08i")
+    print a.Servos.attach(2),"attach"
+    import time
+    i = 0
+    while True:
+        a.Servos.write(2,10*i)
+        time.sleep(.1)
+        print a.Servos.read(2),10*i
+        i+=1

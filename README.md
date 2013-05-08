@@ -116,18 +116,18 @@ board.analogWrite(11) #Set analog value (PWM) based on analog measurement
 **Servo Library Functionality**
 Support is included for up to 8 servos. 
 
-- `Arduino.Servo.attach(pin, min = 544, max = 2400)` Create servo instance. Only 8 servos can be used at one time. 
-- `Arduino.Servo.read(pin)` Returns the angle of the servo attached to the specified pin
-- `Arduino.Servo.write(pin, angle)` Move an attached servo on a pin to a specified angle
-- `Arduino.Servo.writeMicroseconds(pin, uS)` Write a value in microseconds to the servo on a specified pin
-- `Arduino.Servo.detach(pin)` Detaches the servo on the specified pin
+- `Arduino.Servos.attach(pin, min = 544, max = 2400)` Create servo instance. Only 8 servos can be used at one time. 
+- `Arduino.Servos.read(pin)` Returns the angle of the servo attached to the specified pin
+- `Arduino.Servos.write(pin, angle)` Move an attached servo on a pin to a specified angle
+- `Arduino.Servos.writeMicroseconds(pin, uS)` Write a value in microseconds to the servo on a specified pin
+- `Arduino.Servos.detach(pin)` Detaches the servo on the specified pin
 
 ```python
 #Servo example
-board.Servo.attach(9) #declare servo on pin 9
-board.Servo.write(9, 0) #move servo on pin 9 to 0 degrees
-print board.Servo.read(9) # should be 0
-board.Servo.detach(9) #free pin 9
+board.Servos.attach(9) #declare servo on pin 9
+board.Servos.write(9, 0) #move servo on pin 9 to 0 degrees
+print board.Servos.read(9) # should be 0
+board.Servos.detach(9) #free pin 9
 ```
 
 **Software Serial Functionality**
