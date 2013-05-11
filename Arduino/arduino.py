@@ -1,16 +1,18 @@
 #!/usr/bin/env python
-from serial.tools import list_ports
-import serial, time
+import itertools
 import platform
+import serial
+import time
+from serial.tools import list_ports
 if platform.system() == 'Windows':
     import _winreg as winreg
 else:
     import glob
-import itertools
 
 
 def enumerate_serial_ports():
-    """ Uses the Win32 registry to return a iterator of serial 
+    """
+    Uses the Win32 registry to return a iterator of serial
         (COM) ports existing on this computer.
     """
     path = 'HARDWARE\\DEVICEMAP\\SERIALCOMM'
@@ -22,41 +24,40 @@ def enumerate_serial_ports():
     for i in itertools.count():
         try:
             val = winreg.EnumValue(key, i)
-            yield (str(val[1]))#, str(val[0]))
+            yield (str(val[1]))  # , str(val[0]))
         except EnvironmentError:
             break
 
-    
+
 class Arduino(object):
-    def __init__(self,baud=9600,port=None,timeout=2):
+    def __init__(self, baud=9600, port=None, timeout=2):
         """
         Initializes serial communication with Arduino.
         Attempts to self-select COM port, if not specified.
         """
         self.baud = baud
         self.timeout = timeout
-        self.ss_connected=False
+        self.ss_connected = False
         self.port = port
         if not self.port:
             self.findPort()
         else:
-            self.sr = serial.Serial(self.port, self.baud,timeout =self.timeout)
+            self.sr = serial.Serial(self.port, self.baud,
+                                    timeout = self.timeout)
         self.SoftwareSerial = SoftwareSerial(self)
         self.Servos = Servos(self)
         self.sr.flush()
 
-
     def version(self):
-        cmd_str=''.join(["@version%$!"])
+        cmd_str = ''.join(["@version%$!"])
         try:
             self.sr.write(cmd_str)
             self.sr.flush()
         except:
             pass
-        version = self.sr.readline().replace("\r\n","")
+        version = self.sr.readline().replace("\r\n", "")
         return version
 
-        
     def findPort(self):
         """
         Sets port to the first Arduino found
@@ -73,7 +74,7 @@ class Arduino(object):
             version = None
             try:
                 print 'Testing ', p
-                self.sr = serial.Serial(p, self.baud,timeout=self.timeout)
+                self.sr = serial.Serial(p, self.baud, timeout=self.timeout)
                 time.sleep(2)
                 version = self.version()
                 if version != 'version':
@@ -85,8 +86,7 @@ class Arduino(object):
                 print "Exception: ", e
                 pass
 
-       
-    def digitalWrite(self,pin,val):
+    def digitalWrite(self, pin, val):
         """
         Sends digitalWrite command
         to digital pin on Arduino
@@ -95,19 +95,18 @@ class Arduino(object):
            pin : digital pin number
            val : either "HIGH" or "LOW"
         """
-        if val=="LOW":
+        if val == "LOW":
             pin_ = -pin
         else:
             pin_ = pin
-        cmd_str=''.join(["@dw%",str(pin_),"$!"])
+        cmd_str = ''.join(["@dw%", str(pin_), "$!"])
         try:
             self.sr.write(cmd_str)
-            self.sr.flush()    
+            self.sr.flush()
         except:
             pass
 
-
-    def analogWrite(self,pin,val):
+    def analogWrite(self, pin, val):
         """
         Sends analogWrite pwm command
         to pin on Arduino
@@ -116,19 +115,18 @@ class Arduino(object):
            pin : pin number
            val : integer 0 (off) to 255 (always on)
         """
-        if val>255:
-            val=255
-        elif val<0:
-            val=0
-        cmd_str=''.join(["@aw%",str(pin),"%",str(val),"$!"])
+        if val > 255:
+            val = 255
+        elif val < 0:
+            val = 0
+        cmd_str = ''.join(["@aw%", str(pin), "%", str(val), "$!"])
         try:
             self.sr.write(cmd_str)
             self.sr.flush()
         except:
             pass
 
-
-    def analogRead(self,pin):
+    def analogRead(self, pin):
         """
         Returns the value of a specified
         analog pin.
@@ -137,70 +135,67 @@ class Arduino(object):
         returns:
            value: integer from 1 to 1023
         """
-        cmd_str=''.join(["@ar%",str(pin),"$!"])
+        cmd_str = ''.join(["@ar%", str(pin), "$!"])
         try:
             self.sr.write(cmd_str)
             self.sr.flush()
         except:
             pass
-        rd = self.sr.readline().replace("\r\n","")
+        rd = self.sr.readline().replace("\r\n", "")
         try:
             return int(rd)
         except:
             return 0
 
-      
-    def pinMode(self,pin,val):
+    def pinMode(self, pin, val):
         """
         Sets I/O mode of pin
         inputs:
            pin: pin number to toggle
            val: "INPUT" or "OUTPUT"
         """
-        if val=="INPUT":
+        if val == "INPUT":
             pin_ = -pin
         else:
             pin_ = pin
-        cmd_str=''.join(["@pm%",str(pin_),"$!"])
+        cmd_str = ''.join(["@pm%", str(pin_), "$!"])
         try:
             self.sr.write(cmd_str)
-            self.sr.flush()    
+            self.sr.flush()
         except:
             pass
 
-    
-    def pulseIn(self,pin,val):
+    def pulseIn(self, pin, val):
         """
         Reads a pulse from a pin
-        
+
         inputs:
            pin: pin number for pulse measurement
         returns:
            duration : pulse length measurement
         """
-        if val=="LOW":
+        if val == "LOW":
             pin_ = -pin
         else:
             pin_ = pin
-        cmd_str=''.join(["@pi%",str(pin_),"$!"])
+        cmd_str = ''.join(["@pi%", str(pin_), "$!"])
         try:
             self.sr.write(cmd_str)
-            self.sr.flush()   
+            self.sr.flush()
         except:
             pass
-        rd = self.sr.readline().replace("\r\n","")
+        rd = self.sr.readline().replace("\r\n", "")
         try:
             return float(rd)
         except:
-            return -1    
+            return -1
 
-    
-    def pulseIn_set(self,pin,val,numTrials=5):
+    def pulseIn_set(self, pin, val, numTrials=5):
         """
         Sets a digital pin value, then reads the response
         as a pulse width.
         Useful for some ultrasonic rangefinders, etc.
-        
+
         inputs:
            pin: pin number for pulse measurement
            val: "HIGH" or "LOW". Pulse is measured
@@ -208,13 +203,13 @@ class Arduino(object):
            numTrials: number of trials (for an average)
         returns:
            duration : an average of pulse length measurements
-           
+
         This method will automatically toggle
-        I/O modes on the pin and precondition the 
+        I/O modes on the pin and precondition the
         measurment with a clean LOW/HIGH pulse.
-        Arduino.pulseIn_set(pin,"HIGH") is 
+        Arduino.pulseIn_set(pin,"HIGH") is
         equivalent to the Arduino sketch code:
-        
+
         pinMode(pin, OUTPUT);
         digitalWrite(pin, LOW);
         delayMicroseconds(2);
@@ -222,41 +217,39 @@ class Arduino(object):
         delayMicroseconds(5);
         digitalWrite(pin, LOW);
         pinMode(pin, INPUT);
-        long duration = pulseIn(pin, HIGH); 
+        long duration = pulseIn(pin, HIGH);
         """
-        if val=="LOW":
+        if val == "LOW":
             pin_ = -pin
         else:
             pin_ = pin
-        cmd_str=''.join(["@ps%",str(pin_),"$!"])
+        cmd_str = ''.join(["@ps%", str(pin_), "$!"])
         durations = []
         for s in range(numTrials):
             try:
                 self.sr.write(cmd_str)
-                self.sr.flush()   
+                self.sr.flush()
             except:
                 pass
-            rd = self.sr.readline().replace("\r\n","")
-            if rd.isdigit() == True:
-                if (int(rd) > 1) == True:
+            rd = self.sr.readline().replace("\r\n", "")
+            if rd.isdigit():
+                if (int(rd) > 1):
                     durations.append(int(rd))
         if len(durations) > 0:
             duration = int(sum(durations)) / int(len(durations))
         else:
             duration = None
-            
+
         try:
             return float(duration)
         except:
             return -1
 
-        
     def close(self):
         self.sr.flush()
-        self.sr.close() 
+        self.sr.close()
 
-    
-    def digitalRead(self,pin):
+    def digitalRead(self, pin):
         """
         Returns the value of a specified
         digital pin.
@@ -265,18 +258,17 @@ class Arduino(object):
         returns:
            value: 0 for "LOW", 1 for "HIGH"
         """
-        cmd_str=''.join(["@dr%",str(pin),"$!"])
+        cmd_str = ''.join(["@dr%", str(pin), "$!"])
         try:
             self.sr.write(cmd_str)
             self.sr.flush()
         except:
             pass
-        rd = self.sr.readline().replace("\r\n","")
+        rd = self.sr.readline().replace("\r\n", "")
         try:
             return 1 - int(rd)
         except:
             return 0
-
 
     def Melody(self, pin, melody, durations):
         """
@@ -290,8 +282,10 @@ class Arduino(object):
 
         Melodies of the following lenght, can cause trouble
         when playing it multiple times.
-            board.Melody(9,["C4","G3","G3","A3","G3",0,"B3","C4"],[4,8,8,4,4,4,4,4])
-        Playing short melodies (1 or 2 tones) didn't cause trouble during testing
+            board.Melody(9,["C4","G3","G3","A3","G3",0,"B3","C4"],
+                                                [4,8,8,4,4,4,4,4])
+        Playing short melodies (1 or 2 tones) didn't cause
+        trouble during testing
         """
         NOTES = dict(B0=31,C1=33,CS1=35,D1=37,DS1=39,E1=41,F1=44,FS1=46,G1=49\
                  ,GS1=52,A1=55,AS1=58,B1=62,C2=65,CS2=69,D2=73,DS2=78,E2=82\
