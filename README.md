@@ -10,7 +10,7 @@ simply read/control/troubleshoot/experiment
 with harware connected to an Arduino board without ever having to recompile and reload sketches to the board itself.
 
 Method names within the Python Arduino Command API are designed to be as close 
-as possible to their Arduino programming language counterparts.
+as possible to their Arduino programming language counterparts
 
 ## Simple usage example (LED blink)
 ```python
