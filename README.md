@@ -49,6 +49,16 @@ bluetooth, xbee, etc + associated drivers)
 For a collection of examples, see `examples.py`. This file contains methods which replicate
 the functionality of many Arduino demo sketches. 
 
+## Testing:
+The `tests` directory contains some basic tests for the library. Extensive coverage is a bit difficult, since a positive test involves actually
+connecting and issuing commands to a live Arduino, hosting any hardware
+required to test a particular function. But a core of basic communication tests
+should at least be maintained here.
+
+After installation, the tests can be run directly:
+```bash
+$ python tests/test_main.py
+```
 ## Classes
 - `Arduino(baud)` - Set up communication with currently connected and powered 
 Arduino. 
