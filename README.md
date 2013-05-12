@@ -50,12 +50,12 @@ For a collection of examples, see `examples.py`. This file contains methods whic
 the functionality of many Arduino demo sketches. 
 
 ## Testing:
-The `tests` directory contains some basic tests for the library. Extensive coverage is a bit difficult, since a positive test involves actually
+The `tests` directory contains some basic tests for the library. Extensive code coverage is a bit difficult to expect for every release, since a positive test involves actually
 connecting and issuing commands to a live Arduino, hosting any hardware
 required to test a particular function. But a core of basic communication tests
-should at least be maintained here.
+should at least be maintained here and used before merging into the `master` branch.
 
-After installation, the tests can be run directly:
+After installation, the tests can be run from the source directory:
 ```bash
 $ python tests/test_main.py
 ```
