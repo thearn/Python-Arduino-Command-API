@@ -27,14 +27,17 @@ class TestBasics(unittest.TestCase):
         Tests digital pin functionality
         """
         led_pin = 13
-        board.digitalWrite(led_pin, "LOW")
-        state = board.digitalRead(led_pin)
+        self.board.digitalWrite(led_pin, "LOW")
+        state = self.board.digitalRead(led_pin)
         self.assertEqual(state, 0)
+
         time.sleep(1)
-        board.digitalWrite(led_pin, "HIGH")
-        state = board.digitalRead(led_pin)
+
+        self.board.digitalWrite(led_pin, "HIGH")
+        state = self.board.digitalRead(led_pin)
         self.assertEqual(state, 1)
-        board.digitalWrite(led_pin, "LOW")
+
+        self.board.digitalWrite(led_pin, "LOW")
 
 if __name__ == '__main__':
     unittest.main()
