@@ -7,6 +7,7 @@ def Blink(led_pin,baud, port = ""):
     Blinks an LED in 1 sec intervals
     """
     board = Arduino(baud, port=port)
+    board.pinMode(13, "INPUT")
     while True:
         board.digitalWrite(led_pin,"LOW")
         print board.digitalRead(led_pin) #confirm LOW (0)
@@ -67,16 +68,5 @@ def LCD(tx,baud,ssbaud,message, port=""):
     while True:
         board.SoftwareSerial.write(" test ") 
 
-
-
-
 if __name__=="__main__":
-    a = Arduino('9600', port="/dev/tty.usbserial-A700e08i")
-    print a.Servos.attach(2),"attach"
-    import time
-    i = 0
-    while True:
-        a.Servos.write(2,10*i)
-        time.sleep(.1)
-        print a.Servos.read(2),10*i
-        i+=1
+    Blink(13, '9600', port="/dev/tty.usbserial-A700e08i")
