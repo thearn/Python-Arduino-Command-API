@@ -1,6 +1,6 @@
 from setuptools import setup
 
-setup(name='Python Arduino Command API',
+setup(name='arduino-python',
     version='0.1',
     install_requires=['pyserial >= 2.6'],
     description="a light-weight Python library for communicating with Arduino microcontroller boards",
