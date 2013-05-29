@@ -266,7 +266,7 @@ class Arduino(object):
             pass
         rd = self.sr.readline().replace("\r\n", "")
         try:
-            return 1 - int(rd)
+            return int(rd)
         except:
             return 0
 
