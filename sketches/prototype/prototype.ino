@@ -154,6 +154,35 @@ void ConfigurePinHandler(String data){
     }
 }
 
+void shiftOutHandler(String data) {    
+    String sdata[4];
+    split(sdata, 4, data, '%');
+    int dataPin = sdata[0].toInt();
+    int clockPin = sdata[1].toInt();
+    String bitOrderName = sdata[2];
+    byte value = (byte)(sdata[3].toInt());
+    if (bitOrderName == "MSBFIRST") {
+       shiftOut(dataPin, clockPin, MSBFIRST, value);
+    } else {
+       shiftOut(dataPin, clockPin, LSBFIRST, value);
+    }
+}
+
+void shiftInHandler(String data) {
+    String sdata[3];
+    split(sdata, 3, data, '%');
+    int dataPin = sdata[0].toInt();
+    int clockPin = sdata[1].toInt();
+    String bitOrderName = sdata[2];
+    int incoming;
+    if (bitOrderName == "MSBFIRST") {
+       incoming = (int)shiftIn(dataPin, clockPin, MSBFIRST);
+    } else {
+       incoming = (int)shiftIn(dataPin, clockPin, LSBFIRST);
+    }
+    Serial.println(incoming);
+}
+
 void SS_set(String data){
   delete sserial;
   String sdata[3];
@@ -341,7 +370,14 @@ void SerialParser(void) {
   }  
   else if (cmd == "cap") {
       readCapacitivePin(data);   
-  }  
+  }
+  else if (cmd == "so") {
+      shiftOutHandler(data);
+  }
+  else if (cmd == "si") {
+      shiftInHandler(data);
+  }
+
 }
 
 void setup()  {
