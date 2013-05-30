@@ -266,7 +266,7 @@ class Arduino(object):
             pass
         rd = self.sr.readline().replace("\r\n", "")
         try:
-            return 1 - int(rd)
+            return int(rd)
         except:
             return 0
 
@@ -345,7 +345,51 @@ class Arduino(object):
         rd = self.sr.readline().replace("\r\n","")
         if rd.isdigit() == True:
             return int(rd)
-            
+
+    def shiftOut(self, dataPin, clockPin, pinOrder, value):
+        """
+        Shift a byte out on the datapin using Arduino's shiftOut().
+
+        Input:
+            dataPin (int): pin for data
+            clockPin (int): pin for clock
+            pinOrder (String): either 'MSBFIRST' or 'LSBFIRST'
+            value (int): an integer from 0 and 255
+        """
+        cmd_str = self._buildCmdStr("so",
+            (dataPin, clockPin, pinOrder, value))
+        self.sr.write(cmd_str)
+        self.sr.flush()
+
+    def shiftIn(self, dataPin, clockPin, pinOrder):
+        """
+        Shift a byte in from the datapin using Arduino's shiftIn().
+
+        Input:
+            dataPin (int): pin for data
+            clockPin (int): pin for clock
+            pinOrder (String): either 'MSBFIRST' or 'LSBFIRST'
+        Output:
+            (int) an integer from 0 to 255
+        """
+        cmd_str = self._buildCmdStr("si", (dataPin, clockPin, pinOrder))
+        self.sr.write(cmd_str)
+        self.sr.flush()
+        rd = self.sr.readline().replace("\r\n","")
+        if rd.isdigit() == True:
+            return int(rd)
+
+    def _buildCmdStr(self, cmd, args):
+        """
+        Build a command string that can be sent to the arduino.
+
+        Input:
+            cmd (str): the command to send to the arduino
+            args (iterable): the arguments to send to the command
+        """
+        args = '%'.join(map(str, args))
+        return "@{cmd}%{args}$!".format(cmd=cmd, args=args)
+
 
 class Shrimp(Arduino):
     def __init__(self):
