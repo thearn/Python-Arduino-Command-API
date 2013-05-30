@@ -339,7 +339,6 @@ class Arduino(object):
         else:
             return -1
 
-
     def capacitivePin(self, pin):
         '''
         Input:
@@ -351,7 +350,7 @@ class Arduino(object):
         the pin is toggled to output mode to discharge the port,
         and if connected to a voltage source,
         will short circuit the pin, potentially damaging
-        the Arduino/Shrimp and any hardware attached to the pin. 
+        the Arduino/Shrimp and any hardware attached to the pin.
         '''
         cmd_str = build_cmd_str("cap", (pin,))
         self.sr.write(cmd_str)
@@ -397,8 +396,8 @@ class Shrimp(Arduino):
     def __init__(self):
         Arduino.__init__(self)
 
-        
-class Wires(object):            
+
+class Wires(object):
     """
     Class for Arduino wire (i2c) support
     """
@@ -406,7 +405,7 @@ class Wires(object):
         self.board = board
         self.sr = board.sr
 
-        
+
 class Servos(object):
     """
     Class for Arduino servo support
@@ -417,14 +416,13 @@ class Servos(object):
         self.sr = board.sr
         self.servo_pos = {}
 
-        
-    def attach(self,pin,min = 544, max = 2400):     
+    def attach(self, pin, min=544, max=2400):
         cmd_str = build_cmd_str("sva", (pin, min, max))
-        
+
         while True:
             self.sr.write(cmd_str)
             self.sr.flush()
-                
+
             rd = self.sr.readline().replace("\r\n","")
             if rd:
                 break
@@ -434,8 +432,7 @@ class Servos(object):
         self.servo_pos[pin] = position
         return 1
 
-     
-    def detach(self,pin):
+    def detach(self, pin):
         cmd_str = build_cmd_str("svd", (position,))
         try:
             self.sr.write(cmd_str)
@@ -444,8 +441,7 @@ class Servos(object):
             pass
         del self.servo_pos[pin]
 
-
-    def write(self,pin,angle):     
+    def write(self, pin, angle):
         position = self.servo_pos[pin]
         cmd_str = build_cmd_str("svw" (position, angle))
 
@@ -455,13 +451,13 @@ class Servos(object):
     def writeMicroseconds(self, pin, uS):
         position = self.servo_pos[pin]
         cmd_str = build_cmd_str("svw", (position, uS))
-        
+
         self.sr.write(cmd_str)
         self.sr.flush()
 
-    def read(self,pin):
+    def read(self, pin):
         if pin not in self.servo_pos.keys():
-            self.attach(pin) 
+            self.attach(pin)
         position = self.servo_pos[pin]
         cmd_str = build_cmd_str("svr", (position,))
         try:
@@ -481,15 +477,14 @@ class SoftwareSerial(object):
     """
     Class for Arduino software serial functionality
     """
-    def __init__(self,board):
-        self.board=board
+    def __init__(self, board):
+        self.board = board
         self.sr = board.sr
         self.connected = False
 
-
-    def begin(self,p1,p2,baud):
+    def begin(self, p1, p2, baud):
         """
-        Create software serial instance on 
+        Create software serial instance on
         specified tx,rx pins, at specified baud
         """
         cmd_str = build_cmd_str("ss", (p1, p2, baud))
@@ -498,7 +493,7 @@ class SoftwareSerial(object):
             self.sr.flush()
         except:
             pass
-        response= self.sr.readline().replace("\r\n","")
+        response = self.sr.readline().replace("\r\n","")
         if response == "ss OK":
             self.connected = True
             return True
@@ -506,10 +501,9 @@ class SoftwareSerial(object):
             self.connected = False
             return False
 
-        
-    def write(self,data):
+    def write(self, data):
         """
-        sends data to existing software serial instance 
+        sends data to existing software serial instance
         using Arduino's 'write' function
         """
         if self.connected:
@@ -519,12 +513,11 @@ class SoftwareSerial(object):
                 self.sr.flush()
             except:
                 pass
-            response= self.sr.readline().replace("\r\n","")
+            response = self.sr.readline().replace("\r\n","")
             if response == "ss OK":
                 return True
         else:
             return False
-
 
     def read(self):
         """
@@ -535,8 +528,8 @@ class SoftwareSerial(object):
             cmd_str = build_cmd_str("sr")
             self.sr.write(cmd_str)
             self.sr.flush()
-            response= self.sr.readline().replace("\r\n","")
+            response = self.sr.readline().replace("\r\n","")
             if response:
                 return response
         else:
-            return False         
+            return False
