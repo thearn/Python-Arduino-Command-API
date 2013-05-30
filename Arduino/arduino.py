@@ -29,6 +29,24 @@ def enumerate_serial_ports():
             break
 
 
+def build_cmd_str(cmd, args=None):
+    """
+    Build a command string that can be sent to the arduino.
+
+    Input:
+        cmd (str): the command to send to the arduino, must not
+            contain a % character
+        args (iterable): the arguments to send to the command
+
+    @TODO: a strategy is needed to escape % characters in the args
+    """
+    if args:
+        args = '%'.join(map(str, args))
+    else:
+        args = ''
+    return "@{cmd}%{args}$!".format(cmd=cmd, args=args)
+
+
 class Arduino(object):
     def __init__(self, baud=9600, port=None, timeout=2):
         """
@@ -49,7 +67,7 @@ class Arduino(object):
         self.sr.flush()
 
     def version(self):
-        cmd_str = ''.join(["@version%$!"])
+        cmd_str = build_cmd_str("version")
         try:
             self.sr.write(cmd_str)
             self.sr.flush()
@@ -99,7 +117,7 @@ class Arduino(object):
             pin_ = -pin
         else:
             pin_ = pin
-        cmd_str = ''.join(["@dw%", str(pin_), "$!"])
+        cmd_str = build_cmd_str("dw", (pin_,))
         try:
             self.sr.write(cmd_str)
             self.sr.flush()
@@ -119,7 +137,7 @@ class Arduino(object):
             val = 255
         elif val < 0:
             val = 0
-        cmd_str = ''.join(["@aw%", str(pin), "%", str(val), "$!"])
+        cmd_str = build_cmd_str("aw", (pin, val))
         try:
             self.sr.write(cmd_str)
             self.sr.flush()
@@ -135,7 +153,7 @@ class Arduino(object):
         returns:
            value: integer from 1 to 1023
         """
-        cmd_str = ''.join(["@ar%", str(pin), "$!"])
+        cmd_str = build_cmd_str("ar", (pin,))
         try:
             self.sr.write(cmd_str)
             self.sr.flush()
@@ -158,7 +176,7 @@ class Arduino(object):
             pin_ = -pin
         else:
             pin_ = pin
-        cmd_str = ''.join(["@pm%", str(pin_), "$!"])
+        cmd_str = build_cmd_str("pm", (pin_,))
         try:
             self.sr.write(cmd_str)
             self.sr.flush()
@@ -178,7 +196,7 @@ class Arduino(object):
             pin_ = -pin
         else:
             pin_ = pin
-        cmd_str = ''.join(["@pi%", str(pin_), "$!"])
+        cmd_str = build_cmd_str("pi", (pin_,))
         try:
             self.sr.write(cmd_str)
             self.sr.flush()
@@ -223,7 +241,7 @@ class Arduino(object):
             pin_ = -pin
         else:
             pin_ = pin
-        cmd_str = ''.join(["@ps%", str(pin_), "$!"])
+        cmd_str = build_cmd_str("ps", (pin_,))
         durations = []
         for s in range(numTrials):
             try:
@@ -258,7 +276,7 @@ class Arduino(object):
         returns:
            value: 0 for "LOW", 1 for "HIGH"
         """
-        cmd_str = ''.join(["@dr%", str(pin), "$!"])
+        cmd_str = build_cmd_str("dr", (pin,))
         try:
             self.sr.write(cmd_str)
             self.sr.flush()
@@ -300,22 +318,17 @@ class Arduino(object):
                  ,GS7=3322,A7=3520,AS7=3729,B7=3951,C8=4186,CS8=4435,D8=4699,DS8=4978)
         if (type(melody) == list) and (type(durations) == list):
             length = len(melody)
-            cmd_str = "@to%"+str(length)+"%"+str(pin)+"%"
-            d = ""
+            cmd_args = [length, pin]
             if length == len(durations):
-                for note in range(length):
-                    n = NOTES.get(melody[note])
-                    cmd_str = cmd_str+str(n)+"%"
-                for duration in range(len(durations)):
-                    d = str(durations[duration])
-                    cmd_str = cmd_str+d+"%"
-                cmd_str = cmd_str[:-1]+"$!"
+                cmd_args.extend([NOTES.get(melody[note]) for note in range(length)])
+                cmd_args.extend([durations[duration] for duration in range(len(durations))])
+                cmd_str = build_cmd_str("to", cmd_args)
                 try:
                     self.sr.write(cmd_str)
                     self.sr.flush()
                 except:
                     pass
-                cmd_str=''.join(["@nto%",str(pin),"$!"])
+                cmd_str = build_cmd_str("nto", [pin])
                 try:
                     self.sr.write(cmd_str)
                     self.sr.flush()
@@ -340,7 +353,7 @@ class Arduino(object):
         will short circuit the pin, potentially damaging
         the Arduino/Shrimp and any hardware attached to the pin. 
         '''
-        cmd_str="@cap%"+str(pin)+"$!"
+        cmd_str = build_cmd_str("cap", (pin,))
         self.sr.write(cmd_str)
         rd = self.sr.readline().replace("\r\n","")
         if rd.isdigit() == True:
@@ -356,7 +369,7 @@ class Arduino(object):
             pinOrder (String): either 'MSBFIRST' or 'LSBFIRST'
             value (int): an integer from 0 and 255
         """
-        cmd_str = self._buildCmdStr("so",
+        cmd_str = build_cmd_str("so",
             (dataPin, clockPin, pinOrder, value))
         self.sr.write(cmd_str)
         self.sr.flush()
@@ -372,23 +385,12 @@ class Arduino(object):
         Output:
             (int) an integer from 0 to 255
         """
-        cmd_str = self._buildCmdStr("si", (dataPin, clockPin, pinOrder))
+        cmd_str = build_cmd_str("si", (dataPin, clockPin, pinOrder))
         self.sr.write(cmd_str)
         self.sr.flush()
         rd = self.sr.readline().replace("\r\n","")
         if rd.isdigit() == True:
             return int(rd)
-
-    def _buildCmdStr(self, cmd, args):
-        """
-        Build a command string that can be sent to the arduino.
-
-        Input:
-            cmd (str): the command to send to the arduino
-            args (iterable): the arguments to send to the command
-        """
-        args = '%'.join(map(str, args))
-        return "@{cmd}%{args}$!".format(cmd=cmd, args=args)
 
 
 class Shrimp(Arduino):
@@ -417,7 +419,7 @@ class Servos(object):
 
         
     def attach(self,pin,min = 544, max = 2400):     
-        cmd_str=''.join(["@sva%",str(pin),"%",str(min),"%",str(max),"$!"])
+        cmd_str = build_cmd_str("sva", (pin, min, max))
         
         while True:
             self.sr.write(cmd_str)
@@ -433,8 +435,8 @@ class Servos(object):
         return 1
 
      
-    def detach(self,pin):     
-        cmd_str=''.join(["@svd%",str(position),"$!"])
+    def detach(self,pin):
+        cmd_str = build_cmd_str("svd", (position,))
         try:
             self.sr.write(cmd_str)
             self.sr.flush()
@@ -445,25 +447,23 @@ class Servos(object):
 
     def write(self,pin,angle):     
         position = self.servo_pos[pin]
-        cmd_str=''.join(["@svw%",str(position),"%",str(angle),"$!"])
-        
+        cmd_str = build_cmd_str("svw" (position, angle))
+
         self.sr.write(cmd_str)
         self.sr.flush()
 
-   
-    def writeMicroseconds(self,pin,uS):
+    def writeMicroseconds(self, pin, uS):
         position = self.servo_pos[pin]
-        cmd_str=''.join(["@svw%",str(position),"%",str(uS),"$!"])
+        cmd_str = build_cmd_str("svw", (position, uS))
         
         self.sr.write(cmd_str)
         self.sr.flush()
 
-   
     def read(self,pin):
         if pin not in self.servo_pos.keys():
             self.attach(pin) 
         position = self.servo_pos[pin]
-        cmd_str=''.join(["@svr%",str(position),"$!"])
+        cmd_str = build_cmd_str("svr", (position,))
         try:
             self.sr.write(cmd_str)
             self.sr.flush()
@@ -492,7 +492,7 @@ class SoftwareSerial(object):
         Create software serial instance on 
         specified tx,rx pins, at specified baud
         """
-        cmd_str=''.join(["@ss%",str(p1),"%",str(p2),"%",str(baud),"$!"])
+        cmd_str = build_cmd_str("ss", (p1, p2, baud))
         try:
             self.sr.write(cmd_str)
             self.sr.flush()
@@ -513,7 +513,7 @@ class SoftwareSerial(object):
         using Arduino's 'write' function
         """
         if self.connected:
-            cmd_str=''.join(["@sw%",str(data),"$!"])
+            cmd_str = build_cmd_str("sw", (data,))
             try:
                 self.sr.write(cmd_str)
                 self.sr.flush()
@@ -532,7 +532,7 @@ class SoftwareSerial(object):
         existing software serial instance
         """
         if self.connected:
-            cmd_str=''.join(["@sr%$!"])
+            cmd_str = build_cmd_str("sr")
             self.sr.write(cmd_str)
             self.sr.flush()
             response= self.sr.readline().replace("\r\n","")
