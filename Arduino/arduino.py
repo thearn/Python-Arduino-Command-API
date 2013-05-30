@@ -451,7 +451,8 @@ class Servos(object):
         self.sr.flush()
 
    
-    def writeMicroseconds(self,pin,uS):     
+    def writeMicroseconds(self,pin,uS):
+        position = self.servo_pos[pin]
         cmd_str=''.join(["@svw%",str(position),"%",str(uS),"$!"])
         
         self.sr.write(cmd_str)
