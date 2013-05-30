@@ -55,7 +55,6 @@ class Arduino(object):
         """
         self.baud = baud
         self.timeout = timeout
-        self.ss_connected = False
         self.port = port
         if not self.port:
             self.findPort()
