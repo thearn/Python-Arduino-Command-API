@@ -32,9 +32,13 @@ class TestBasics(unittest.TestCase):
 
     def test_open(self):
         """ Tests connecting to an explicit port. """
-        port = raw_input(
-            'Plug in Arduino board w/LED at pin 13, reset.\n'\
-            'Enter the port where the Arduino is connected, then press enter:')
+        port = None
+        while not port:
+            port = raw_input(
+                'Plug in Arduino board w/LED at pin 13, reset.\n'\
+                'Enter the port where the Arduino is connected, then press enter:')
+            if not port:
+                print 'You must enter a port.'
         from Arduino import Arduino
         board = None
         try:
