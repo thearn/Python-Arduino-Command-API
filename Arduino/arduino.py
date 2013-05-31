@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import logging
 import itertools
 import platform
 import serial
@@ -8,6 +9,9 @@ if platform.system() == 'Windows':
     import _winreg as winreg
 else:
     import glob
+
+
+log = logging.getLogger(__name__)
 
 
 def enumerate_serial_ports():
@@ -59,20 +63,20 @@ def find_port(baud, timeout):
     else:
         ports = glob.glob("/dev/ttyUSB*") + glob.glob("/dev/ttyACM*")
     for p in ports:
-        print 'Found {0}, testing...'.format(p)
+        log.debug('Found {0}, testing...'.format(p))
         try:
             sr = serial.Serial(p, baud, timeout=timeout)
         except serial.serialutil.SerialException, e:
-            print e
+            log.debug(str(e))
             continue
         time.sleep(2)
         version = get_version(sr)
         if version != 'version':
-            print 'Bad version {0}. This is not a Shrimp/Arduino!'.format(
-                version)
+            log.debug('Bad version {0}. This is not a Shrimp/Arduino!'.format(
+                version))
             sr.close()
             continue
-        print 'Passed, using port {0}.'.format(p)
+        log.info('Using port {0}.'.format(p))
         if sr:
             return sr
     return None
@@ -434,7 +438,7 @@ class Servos(object):
             if rd:
                 break
             else:
-                print "trying to attach servo to pin",pin
+                log.debug("trying to attach servo to pin {0}".format(pin))
         position = int(rd)
         self.servo_pos[pin] = position
         return 1
