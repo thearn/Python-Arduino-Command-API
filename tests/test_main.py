@@ -1,3 +1,4 @@
+import logging
 import unittest
 import time
 
@@ -9,6 +10,9 @@ connecting and issuing commands to a live Arduino, hosting any hardware
 required to test a particular function. But a core of basic communication tests
 should at least be maintained here.
 """
+
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 class TestBasics(unittest.TestCase):

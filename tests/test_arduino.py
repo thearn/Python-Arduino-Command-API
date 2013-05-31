@@ -1,4 +1,8 @@
+import logging
 import unittest
+
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 class MockSerial(object):
