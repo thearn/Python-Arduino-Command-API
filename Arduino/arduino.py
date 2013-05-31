@@ -57,22 +57,24 @@ def find_port(baud, timeout):
     elif platform.system() == 'Darwin':
         ports = [i[0] for i in list_ports.comports()]
     else:
-        ports = glob.glob("/dev/ttyUSB*")
+        ports = glob.glob("/dev/ttyUSB*") + glob.glob("/dev/ttyACM*")
     for p in ports:
-        print 'Found ', p
-        version = None
+        print 'Found {0}, testing...'.format(p)
         try:
-            print 'Testing ', p
-            sr = self.serial_factory(p, self.baud, timeout=self.timeout)
-            time.sleep(2)
-            version = get_version(sr)
-            if version != 'version':
-                raise Exception('This is not a Shrimp/Arduino!')
-            print p, 'passed'
+            sr = serial.Serial(p, baud, timeout=timeout)
+        except serial.serialutil.SerialException, e:
+            print e
+            continue
+        time.sleep(2)
+        version = get_version(sr)
+        if version != 'version':
+            print 'Bad version {0}. This is not a Shrimp/Arduino!'.format(
+                version)
+            sr.close()
+            continue
+        print 'Passed, using port {0}.'.format(p)
+        if sr:
             return sr
-        except Exception, e:
-            print "Exception: ", e
-            pass
     return None
 
 
@@ -96,7 +98,8 @@ class Arduino(object):
         if not sr:
             if not port:
                 sr = find_port(baud, timeout)
-                raise ValueError("Could not find port.")
+                if not sr:
+                    raise ValueError("Could not find port.")
             else:
                 sr = serial.Serial(port, baud, timeout=timeout)
         sr.flush()
