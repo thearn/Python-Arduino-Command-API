@@ -270,8 +270,9 @@ class Arduino(object):
             return -1
 
     def close(self):
-        self.sr.flush()
-        self.sr.close()
+        if self.sr.isOpen():
+            self.sr.flush()
+            self.sr.close()
 
     def digitalRead(self, pin):
         """
