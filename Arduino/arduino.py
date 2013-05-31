@@ -47,61 +47,65 @@ def build_cmd_str(cmd, args=None):
     return "@{cmd}%{args}$!".format(cmd=cmd, args=args)
 
 
+def find_port(baud, timeout):
+    """
+    Find the first port that is connected to an arduino with a compatible
+    sketch installed.
+    """
+    if platform.system() == 'Windows':
+        ports = enumerate_serial_ports()
+    elif platform.system() == 'Darwin':
+        ports = [i[0] for i in list_ports.comports()]
+    else:
+        ports = glob.glob("/dev/ttyUSB*")
+    for p in ports:
+        print 'Found ', p
+        version = None
+        try:
+            print 'Testing ', p
+            sr = self.serial_factory(p, self.baud, timeout=self.timeout)
+            time.sleep(2)
+            version = get_version(sr)
+            if version != 'version':
+                raise Exception('This is not a Shrimp/Arduino!')
+            print p, 'passed'
+            return sr
+        except Exception, e:
+            print "Exception: ", e
+            pass
+    return None
+
+
+def get_version(sr):
+    cmd_str = build_cmd_str("version")
+    try:
+        sr.write(cmd_str)
+        sr.flush()
+    except Exception:
+        return None
+    return sr.readline().replace("\r\n", "")
+
+
 class Arduino(object):
-    def __init__(self, baud=9600, port=None, timeout=2):
+
+    def __init__(self, baud=9600, port=None, timeout=2, sr=None):
         """
-        Initializes serial communication with Arduino.
+        Initializes serial communication with Arduino if no connection is given.
         Attempts to self-select COM port, if not specified.
         """
-        self.baud = baud
-        self.timeout = timeout
-        self.port = port
-        if not self.port:
-            self.findPort()
-        else:
-            self.sr = serial.Serial(self.port, self.baud,
-                                    timeout = self.timeout)
+        if not sr:
+            if not port:
+                sr = find_port(baud, timeout)
+                raise ValueError("Could not find port.")
+            else:
+                sr = serial.Serial(port, baud, timeout=timeout)
+        sr.flush()
+        self.sr = sr
         self.SoftwareSerial = SoftwareSerial(self)
         self.Servos = Servos(self)
-        self.sr.flush()
 
     def version(self):
-        cmd_str = build_cmd_str("version")
-        try:
-            self.sr.write(cmd_str)
-            self.sr.flush()
-        except:
-            pass
-        version = self.sr.readline().replace("\r\n", "")
-        return version
-
-    def findPort(self):
-        """
-        Sets port to the first Arduino found
-        in system's device list
-        """
-        if platform.system() == 'Windows':
-            ports = enumerate_serial_ports()
-        elif platform.system() == 'Darwin':
-            ports = [i[0] for i in list_ports.comports()]
-        else:
-            ports = glob.glob("/dev/ttyUSB*")
-        for p in ports:
-            print 'Found ', p
-            version = None
-            try:
-                print 'Testing ', p
-                self.sr = serial.Serial(p, self.baud, timeout=self.timeout)
-                time.sleep(2)
-                version = self.version()
-                if version != 'version':
-                    raise Exception('This is not a Shrimp/Arduino!')
-                self.port = p
-                print p, 'passed'
-                break
-            except Exception, e:
-                print "Exception: ", e
-                pass
+        return get_version(self.sr)
 
     def digitalWrite(self, pin, val):
         """
