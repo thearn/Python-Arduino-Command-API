@@ -1,6 +1,5 @@
 import unittest
 import time
-from Arduino import Arduino
 
 """
 A collection of some basic tests for the Arduino library.
@@ -13,14 +12,32 @@ should at least be maintained here.
 
 
 class TestBasics(unittest.TestCase):
-    _ = raw_input('Plug in Arduino board w/LED at pin 13, reset, then press enter')
-    board = Arduino('9600')
 
     def test_find(self):
-        """
-        Tests auto-connection/board detection
-        """
-        self.assertIsNotNone(self.board.port)
+        """ Tests auto-connection/board detection. """
+        raw_input(
+            'Plug in Arduino board w/LED at pin 13, reset, then press enter')
+        from Arduino import Arduino
+        board = None
+        try:
+            # This will trigger automatic port resolution.
+            board = Arduino(9600)
+        finally:
+            if board:
+                board.close()
+
+    def test_open(self):
+        """ Tests connecting to an explicit port. """
+        port = raw_input(
+            'Plug in Arduino board w/LED at pin 13, reset.\n'\
+            'Enter the port where the Arduino is connected, then press enter:')
+        from Arduino import Arduino
+        board = None
+        try:
+            board = Arduino(9600, port=port)
+        finally:
+            if board:
+                board.close()
 
 if __name__ == '__main__':
     unittest.main()
