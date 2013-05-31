@@ -55,10 +55,16 @@ connecting and issuing commands to a live Arduino, hosting any hardware
 required to test a particular function. But a core of basic communication tests
 should at least be maintained here and used before merging into the `master` branch.
 
-After installation, the tests can be run from the source directory:
+After installation, the interactive tests can be run from the source directory:
 ```bash
 $ python tests/test_main.py
 ```
+
+Automated tests can be run from the source directory with:
+```bash
+$ python tests/test_arduino.py
+```
+
 ## Classes
 - `Arduino(baud)` - Set up communication with currently connected and powered 
 Arduino. 
@@ -122,6 +128,13 @@ val=board.analogRead(5) #Read value on analog pin 5 (integer 0 to 1023)
 val = val / 4 # scale to 0 - 255
 board.analogWrite(11) #Set analog value (PWM) based on analog measurement
 ```
+
+**Shift Register**
+
+- `Arduino.shiftIn(dataPin, clockPin, bitOrder)` shift a byte in and returns it
+- `Arduino.shiftOut(dataPin, clockPin, bitOrder, value)` shift the given byte out
+
+`bitOrder` should be either `"MSBFIRST"` or `"LSBFIRST"`
 
 **Servo Library Functionality**
 Support is included for up to 8 servos. 
