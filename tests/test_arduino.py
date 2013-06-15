@@ -13,12 +13,22 @@ class MockSerial(object):
         self.timeout = timeout
         self.output = []
         self.input = []
+        self.is_open = True
 
     def flush(self):
         pass
 
     def write(self, line):
         self.output.append(line)
+
+    def isOpen(self):
+        return self.is_open
+
+    def close(self):
+        if self.is_open:
+            self.is_open = False
+        else:
+            raise ValueError('Mock serial port is already closed.')
 
     def readline(self):
         """
@@ -62,6 +72,11 @@ class TestArduino(unittest.TestCase):
         from Arduino.arduino import Arduino
         self.mock_serial = MockSerial(9600, '/dev/ttyACM0')
         self.board = Arduino(sr=self.mock_serial)
+
+    def test_close(self):
+        self.board.close()
+        # Call again, should skip calling close.
+        self.board.close()
 
     def test_version(self):
         from Arduino.arduino import build_cmd_str
