@@ -54,7 +54,15 @@ MSBFIRST = "MSBFIRST"
 LSBFIRST = "LSBFIRST"
 
 
-class TestArduino(unittest.TestCase):
+class ArduinoTestCase(unittest.TestCase):
+
+    def setUp(self):
+        from Arduino.arduino import Arduino
+        self.mock_serial = MockSerial(9600, '/dev/ttyACM0')
+        self.board = Arduino(sr=self.mock_serial)
+
+
+class TestArduino(ArduinoTestCase):
 
     def parse_cmd_sr(self, cmd_str):
         assert cmd_str[0] == '@'
@@ -67,11 +75,6 @@ class TestArduino(unittest.TestCase):
         args_str = cmd_str[first_index+1:-2]
         args = args_str.split('%')
         return cmd, args
-
-    def setUp(self):
-        from Arduino.arduino import Arduino
-        self.mock_serial = MockSerial(9600, '/dev/ttyACM0')
-        self.board = Arduino(sr=self.mock_serial)
 
     def test_close(self):
         self.board.close()
