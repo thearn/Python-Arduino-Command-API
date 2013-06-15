@@ -462,7 +462,7 @@ class Servos(object):
 
     def writeMicroseconds(self, pin, uS):
         position = self.servo_pos[pin]
-        cmd_str = build_cmd_str("svw", (position, uS))
+        cmd_str = build_cmd_str("svwm", (position, uS))
 
         self.sr.write(cmd_str)
         self.sr.flush()
