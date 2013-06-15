@@ -444,6 +444,7 @@ class Servos(object):
         return 1
 
     def detach(self, pin):
+        position = self.servo_pos[pin]
         cmd_str = build_cmd_str("svd", (position,))
         try:
             self.sr.write(cmd_str)
