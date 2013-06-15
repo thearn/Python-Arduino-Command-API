@@ -454,7 +454,7 @@ class Servos(object):
 
     def write(self, pin, angle):
         position = self.servo_pos[pin]
-        cmd_str = build_cmd_str("svw" (position, angle))
+        cmd_str = build_cmd_str("svw", (position, angle))
 
         self.sr.write(cmd_str)
         self.sr.flush()
