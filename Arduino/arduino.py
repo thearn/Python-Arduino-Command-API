@@ -444,6 +444,7 @@ class Servos(object):
         return 1
 
     def detach(self, pin):
+        position = self.servo_pos[pin]
         cmd_str = build_cmd_str("svd", (position,))
         try:
             self.sr.write(cmd_str)
@@ -454,14 +455,14 @@ class Servos(object):
 
     def write(self, pin, angle):
         position = self.servo_pos[pin]
-        cmd_str = build_cmd_str("svw" (position, angle))
+        cmd_str = build_cmd_str("svw", (position, angle))
 
         self.sr.write(cmd_str)
         self.sr.flush()
 
     def writeMicroseconds(self, pin, uS):
         position = self.servo_pos[pin]
-        cmd_str = build_cmd_str("svw", (position, uS))
+        cmd_str = build_cmd_str("svwm", (position, uS))
 
         self.sr.write(cmd_str)
         self.sr.flush()

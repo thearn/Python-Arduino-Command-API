@@ -13,12 +13,22 @@ class MockSerial(object):
         self.timeout = timeout
         self.output = []
         self.input = []
+        self.is_open = True
 
     def flush(self):
         pass
 
     def write(self, line):
         self.output.append(line)
+
+    def isOpen(self):
+        return self.is_open
+
+    def close(self):
+        if self.is_open:
+            self.is_open = False
+        else:
+            raise ValueError('Mock serial port is already closed.')
 
     def readline(self):
         """
@@ -44,7 +54,15 @@ MSBFIRST = "MSBFIRST"
 LSBFIRST = "LSBFIRST"
 
 
-class TestArduino(unittest.TestCase):
+class ArduinoTestCase(unittest.TestCase):
+
+    def setUp(self):
+        from Arduino.arduino import Arduino
+        self.mock_serial = MockSerial(9600, '/dev/ttyACM0')
+        self.board = Arduino(sr=self.mock_serial)
+
+
+class TestArduino(ArduinoTestCase):
 
     def parse_cmd_sr(self, cmd_str):
         assert cmd_str[0] == '@'
@@ -58,10 +76,10 @@ class TestArduino(unittest.TestCase):
         args = args_str.split('%')
         return cmd, args
 
-    def setUp(self):
-        from Arduino.arduino import Arduino
-        self.mock_serial = MockSerial(9600, '/dev/ttyACM0')
-        self.board = Arduino(sr=self.mock_serial)
+    def test_close(self):
+        self.board.close()
+        # Call again, should skip calling close.
+        self.board.close()
 
     def test_version(self):
         from Arduino.arduino import build_cmd_str
@@ -170,6 +188,72 @@ class TestArduino(unittest.TestCase):
         self.board.analogWrite(pin, value)
         self.assertEquals(self.mock_serial.output[0],
             build_cmd_str('aw', (pin, value)))
+
+
+class TestServos(ArduinoTestCase):
+
+    def test_attach(self):
+        from Arduino.arduino import build_cmd_str
+        pin = 10
+        position = 0
+        self.mock_serial.push_line(position)
+        servo_min = 544
+        servo_max = 2400
+        self.board.Servos.attach(pin, min=servo_min, max=servo_max)
+        self.assertEquals(self.mock_serial.output[0],
+            build_cmd_str('sva', (pin, servo_min, servo_max)))
+
+    def test_detach(self):
+        from Arduino.arduino import build_cmd_str
+        pin = 10
+        position = 0
+        # Attach first.
+        self.mock_serial.push_line(position)
+        self.board.Servos.attach(pin)
+        self.mock_serial.reset_mock()
+        self.board.Servos.detach(pin)
+        self.assertEquals(self.mock_serial.output[0],
+            build_cmd_str('svd', (position,)))
+
+    def test_write(self):
+        from Arduino.arduino import build_cmd_str
+        pin = 10
+        position = 0
+        angle = 90
+        # Attach first.
+        self.mock_serial.push_line(position)
+        self.board.Servos.attach(pin)
+        self.mock_serial.reset_mock()
+        self.board.Servos.write(pin, angle)
+        self.assertEquals(self.mock_serial.output[0],
+            build_cmd_str("svw", (position, angle)))
+
+    def test_writeMicroseconds(self):
+        from Arduino.arduino import build_cmd_str
+        pin = 10
+        position = 0
+        microseconds = 1500
+        # Attach first.
+        self.mock_serial.push_line(position)
+        self.board.Servos.attach(pin)
+        self.mock_serial.reset_mock()
+        self.board.Servos.writeMicroseconds(pin, microseconds)
+        self.assertEquals(self.mock_serial.output[0],
+            build_cmd_str("svwm", (position, microseconds)))
+
+    def test_read(self):
+        from Arduino.arduino import build_cmd_str
+        pin = 10
+        position = 0
+        angle = 90
+        # Attach first.
+        self.mock_serial.push_line(position)
+        self.board.Servos.attach(pin)
+        self.mock_serial.reset_mock()
+        self.mock_serial.push_line(angle)
+        self.assertEquals(self.board.Servos.read(pin), angle)
+        self.assertEquals(self.mock_serial.output[0],
+            build_cmd_str("svr", (position,)))
 
 
 if __name__ == '__main__':
