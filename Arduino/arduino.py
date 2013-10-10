@@ -23,7 +23,7 @@ def enumerate_serial_ports():
     try:
         key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, path)
     except WindowsError:
-        raise IterationError
+        raise Exception
 
     for i in itertools.count():
         try:
@@ -66,7 +66,7 @@ def find_port(baud, timeout):
         log.debug('Found {0}, testing...'.format(p))
         try:
             sr = serial.Serial(p, baud, timeout=timeout)
-        except serial.serialutil.SerialException, e:
+        except serial.serialutil.SerialException as e:
             log.debug(str(e))
             continue
         time.sleep(2)
@@ -96,8 +96,8 @@ class Arduino(object):
 
     def __init__(self, baud=9600, port=None, timeout=2, sr=None):
         """
-        Initializes serial communication with Arduino if no connection is given.
-        Attempts to self-select COM port, if not specified.
+        Initializes serial communication with Arduino if no connection is
+        given. Attempts to self-select COM port, if not specified.
         """
         if not sr:
             if not port:
@@ -316,23 +316,27 @@ class Arduino(object):
         Playing short melodies (1 or 2 tones) didn't cause
         trouble during testing
         """
-        NOTES = dict(B0=31,C1=33,CS1=35,D1=37,DS1=39,E1=41,F1=44,FS1=46,G1=49\
-                 ,GS1=52,A1=55,AS1=58,B1=62,C2=65,CS2=69,D2=73,DS2=78,E2=82\
-                 ,F2=87,FS2=93,G2=98,GS2=104,A2=110,AS2=117,B2=123,C3=131\
-                 ,CS3=139,D3=147,DS3=156,E3=165,F3=175,FS3=185,G3=196,GS3=208\
-                 ,A3=220,AS3=233,B3=247,C4=262,CS4=277,D4=294,DS4=311,E4=330\
-                 ,F4=349,FS4=370,G4=392,GS4=415,A4=440,AS4=466,B4=494,C5=523\
-                 ,CS5=554,D5=587,DS5=622,E5=659,F5=698,FS5=740,G5=784,GS5=831\
-                 ,A5=880,AS5=932,B5=988,C6=1047,CS6=1109,D6=1175,DS6=1245,E6=1319\
-                 ,F6=1397,FS6=1480,G6=1568,GS6=1661,A6=1760,AS6=1865,B6=1976,C7=2093\
-                 ,CS7=2217,D7=2349,DS7=2489,E7=2637,F7=2794,FS7=2960,G7=3136\
-                 ,GS7=3322,A7=3520,AS7=3729,B7=3951,C8=4186,CS8=4435,D8=4699,DS8=4978)
-        if (type(melody) == list) and (type(durations) == list):
+        NOTES = dict(
+            B0=31, C1=33, CS1=35, D1=37, DS1=39, E1=41, F1=44, FS1=46, G1=49,
+            GS1=52, A1=55, AS1=58, B1=62, C2=65, CS2=69, D2=73, DS2=78, E2=82,
+            F2=87, FS2=93, G2=98, GS2=104, A2=110, AS2=117, B2=123, C3=131,
+            CS3=139, D3=147, DS3=156, E3=165, F3=175, FS3=185, G3=196, GS3=208,
+            A3=220, AS3=233, B3=247, C4=262, CS4=277, D4=294, DS4=311, E4=330,
+            F4=349, FS4=370, G4=392, GS4=415, A4=440,
+            AS4=466, B4=494, C5=523, CS5=554, D5=587, DS5=622, E5=659, F5=698,
+            FS5=740, G5=784, GS5=831, A5=880, AS5=932, B5=988, C6=1047,
+            CS6=1109, D6=1175, DS6=1245, E6=1319, F6=1397, FS6=1480, G6=1568,
+            GS6=1661, A6=1760, AS6=1865, B6=1976, C7=2093, CS7=2217, D7=2349,
+            DS7=2489, E7=2637, F7=2794, FS7=2960, G7=3136, GS7=3322, A7=3520,
+            AS7=3729, B7=3951, C8=4186, CS8=4435, D8=4699, DS8=4978)
+        if (isinstance(melody, list)) and (isinstance(durations, list)):
             length = len(melody)
             cmd_args = [length, pin]
             if length == len(durations):
-                cmd_args.extend([NOTES.get(melody[note]) for note in range(length)])
-                cmd_args.extend([durations[duration] for duration in range(len(durations))])
+                cmd_args.extend([NOTES.get(melody[note])
+                                for note in range(length)])
+                cmd_args.extend([durations[duration]
+                                for duration in range(len(durations))])
                 cmd_str = build_cmd_str("to", cmd_args)
                 try:
                     self.sr.write(cmd_str)
@@ -365,8 +369,8 @@ class Arduino(object):
         '''
         cmd_str = build_cmd_str("cap", (pin,))
         self.sr.write(cmd_str)
-        rd = self.sr.readline().replace("\r\n","")
-        if rd.isdigit() == True:
+        rd = self.sr.readline().replace("\r\n", "")
+        if rd.isdigit():
             return int(rd)
 
     def shiftOut(self, dataPin, clockPin, pinOrder, value):
@@ -380,7 +384,7 @@ class Arduino(object):
             value (int): an integer from 0 and 255
         """
         cmd_str = build_cmd_str("so",
-            (dataPin, clockPin, pinOrder, value))
+                               (dataPin, clockPin, pinOrder, value))
         self.sr.write(cmd_str)
         self.sr.flush()
 
@@ -398,30 +402,35 @@ class Arduino(object):
         cmd_str = build_cmd_str("si", (dataPin, clockPin, pinOrder))
         self.sr.write(cmd_str)
         self.sr.flush()
-        rd = self.sr.readline().replace("\r\n","")
-        if rd.isdigit() == True:
+        rd = self.sr.readline().replace("\r\n", "")
+        if rd.isdigit():
             return int(rd)
 
 
 class Shrimp(Arduino):
+
     def __init__(self):
         Arduino.__init__(self)
 
 
 class Wires(object):
+
     """
     Class for Arduino wire (i2c) support
     """
+
     def __init__(self, board):
         self.board = board
         self.sr = board.sr
 
 
 class Servos(object):
+
     """
     Class for Arduino servo support
     0.03 second delay noted
     """
+
     def __init__(self, board):
         self.board = board
         self.sr = board.sr
@@ -434,7 +443,7 @@ class Servos(object):
             self.sr.write(cmd_str)
             self.sr.flush()
 
-            rd = self.sr.readline().replace("\r\n","")
+            rd = self.sr.readline().replace("\r\n", "")
             if rd:
                 break
             else:
@@ -477,7 +486,7 @@ class Servos(object):
             self.sr.flush()
         except:
             pass
-        rd = self.sr.readline().replace("\r\n","")
+        rd = self.sr.readline().replace("\r\n", "")
         try:
             angle = int(rd)
             return angle
@@ -486,9 +495,11 @@ class Servos(object):
 
 
 class SoftwareSerial(object):
+
     """
     Class for Arduino software serial functionality
     """
+
     def __init__(self, board):
         self.board = board
         self.sr = board.sr
@@ -505,7 +516,7 @@ class SoftwareSerial(object):
             self.sr.flush()
         except:
             pass
-        response = self.sr.readline().replace("\r\n","")
+        response = self.sr.readline().replace("\r\n", "")
         if response == "ss OK":
             self.connected = True
             return True
@@ -525,7 +536,7 @@ class SoftwareSerial(object):
                 self.sr.flush()
             except:
                 pass
-            response = self.sr.readline().replace("\r\n","")
+            response = self.sr.readline().replace("\r\n", "")
             if response == "ss OK":
                 return True
         else:
@@ -540,7 +551,7 @@ class SoftwareSerial(object):
             cmd_str = build_cmd_str("sr")
             self.sr.write(cmd_str)
             self.sr.flush()
-            response = self.sr.readline().replace("\r\n","")
+            response = self.sr.readline().replace("\r\n", "")
             if response:
                 return response
         else:
