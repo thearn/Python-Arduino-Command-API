@@ -37,7 +37,7 @@ def softBlink(led_pin, baud, port=""):
 def adjustBrightness(pot_pin, led_pin, baud, port=""):
     """
     Adjusts brightness of an LED using a
-    potentiometer
+    potentiometer.
     """
     board = Arduino(baud, port=port)
     while True:

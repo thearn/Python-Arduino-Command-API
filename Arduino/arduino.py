@@ -375,7 +375,7 @@ class Arduino(object):
 
     def shiftOut(self, dataPin, clockPin, pinOrder, value):
         """
-        Shift a byte out on the datapin using Arduino's shiftOut().
+        Shift a byte out on the datapin using Arduino's shiftOut()
 
         Input:
             dataPin (int): pin for data
