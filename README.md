@@ -2,7 +2,7 @@
 
 The Python Arduino Command API is a light-weight Python library for
 communicating with [Arduino microcontroller boards](http://www.arduino.cc/) from a connected computer using
-standard serial IO, either physically
+standard serial IO, either over a physical wire 
 or wirelessly. It is written using a custom protocol, similar to [Firmata](http://firmata.org/wiki/Main_Page).
 
 This allows a user to quickly protoype programs for Arduino using Python code, or to
