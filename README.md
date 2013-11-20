@@ -38,7 +38,7 @@ while True:
 - Any [Arduino compatible microcontroller](https://www.sparkfun.com/categories/242) with at least 14KB of flash memory
 
 ## Installation:
-Either run `pip install Arduino` from a command line, or run `python setup.py
+Either run `pip install arduino-python` from a command line, or run `python setup.py
 build install` from the source directory to install this library.
 
 ## Setup:
