@@ -66,7 +66,7 @@ def find_port(baud, timeout):
         log.debug('Found {0}, testing...'.format(p))
         try:
             sr = serial.Serial(p, baud, timeout=timeout)
-        except serial.serialutil.SerialException as e:
+        except (serial.serialutil.SerialException, OSError) as e:
             log.debug(str(e))
             continue
         time.sleep(2)
