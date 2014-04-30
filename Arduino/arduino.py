@@ -24,7 +24,7 @@ def enumerate_serial_ports():
         key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, path)
     except WindowsError:
         raise Exception
-
+  
     for i in itertools.count():
         try:
             val = winreg.EnumValue(key, i)
@@ -110,6 +110,7 @@ class Arduino(object):
         self.sr = sr
         self.SoftwareSerial = SoftwareSerial(self)
         self.Servos = Servos(self)
+        self.EEPROM = EEPROM(self)
 
     def version(self):
         return get_version(self.sr)
@@ -556,3 +557,61 @@ class SoftwareSerial(object):
                 return response
         else:
             return False
+
+
+class EEPROM(object):
+    """
+    Class for reading and writing to EEPROM. 
+    """
+
+    def __init__(self, board):
+        self.board = board
+        self.sr = board.sr
+
+    def size(self):
+        """
+        Returns size of EEPROM memory.
+        """
+        cmd_str = build_cmd_str("sz")
+   
+        try:
+            self.sr.write(cmd_str)
+            self.sr.flush()
+            response = self.sr.readline().replace("\r\n", "")
+            return int(response)
+        except:
+            return 0
+        
+    def write(self, address, value=0):
+        """ Write a byte to the EEPROM.
+            
+        :address: the location to write to, starting from 0 (int)
+        :value: the value to write, from 0 to 255 (byte)
+        """
+        
+        if value > 255:
+            value = 255
+        elif value < 0:
+            value = 0
+        cmd_str = build_cmd_str("eewr", (address, value))
+        try:
+            self.sr.write(cmd_str)
+            self.sr.flush()
+        except:
+            pass
+    
+    def read(self, adrress):
+        """ Reads a byte from the EEPROM.
+        
+        :address: the location to write to, starting from 0 (int)
+        """
+        cmd_str = build_cmd_str("eer", (adrress,))
+        try:
+            self.sr.write(cmd_str)
+            self.sr.flush()            
+            response = self.sr.readline().replace("\r\n", "")
+            if response:
+                return int(response)
+        except:
+            return 0
+                                
