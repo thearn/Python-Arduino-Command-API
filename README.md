@@ -81,17 +81,17 @@ If there are more than one Arduino boards connected,
 the desired COM port can be also be passed as an optional argument:
 
 ```python
-board = Arduino("9600", port = "COM3") #Windows example
+board = Arduino("9600", port="COM3") #Windows example
 ```
 ```python
-board = Arduino("9600", port = "/dev/tty.usbmodemfa141") #OSX example
+board = Arduino("9600", port="/dev/tty.usbmodemfa141") #OSX example
 ```
 
 A time-out for reading from the Arduino can also be specified as an optional
 argument:
 
 ```python
-board = Arduino("9600", timeout = 2) #Serial reading functions will
+board = Arduino("9600", timeout=2) #Serial reading functions will
 #wait for no more than 2 seconds
 ```
 
@@ -142,7 +142,7 @@ board.analogWrite(11) #Set analog value (PWM) based on analog measurement
 **Servo Library Functionality**
 Support is included for up to 8 servos.
 
-- `Arduino.Servos.attach(pin, min = 544, max = 2400)` Create servo instance. Only 8 servos can be used at one time.
+- `Arduino.Servos.attach(pin, min=544, max=2400)` Create servo instance. Only 8 servos can be used at one time.
 - `Arduino.Servos.read(pin)` Returns the angle of the servo attached to the specified pin
 - `Arduino.Servos.write(pin, angle)` Move an attached servo on a pin to a specified angle
 - `Arduino.Servos.writeMicroseconds(pin, uS)` Write a value in microseconds to the servo on a specified pin
@@ -158,7 +158,7 @@ board.Servos.detach(9) #free pin 9
 
 **Software Serial Functionality**
 
-- `Arduino.SoftwareSerial.begin(ss_rxPin,ss_txPin,ss_device_baud)` initialize software serial device on
+- `Arduino.SoftwareSerial.begin(ss_rxPin, ss_txPin, ss_device_baud)` initialize software serial device on
 specified pins.
 Only one sofware serial device can be used at a time. Existing software serial instance will
 be be overwritten by calling this method, both in Python and on the arduino board.
@@ -168,9 +168,25 @@ serial connection.
 
 ```python
 #Software serial example
-board.SoftwareSerial.begin(0,7,"19200") # Start software serial for transmit only (tx on pin 7)
+board.SoftwareSerial.begin(0, 7, "19200") # Start software serial for transmit only (tx on pin 7)
 board.SoftwareSerial.write(" test ") #Send some data
 response_char = board.SoftwareSerial.read() #read response character
+```
+
+**EEPROM**
+
+- `Arduino.EEPROM.read(address)` reads a byte from the EEPROM
+- `Arduino.EEPROM.write(address, value)` writes a byte to the EEPROM
+- `Arduino.EEPROM.size()` returns size of the EEPROM
+
+```python
+#EEPROM read and write examples
+location = 42
+value = 10 # 0-255(byte)
+
+board.EEPROM.write(location, 10) 
+print(board.EEPROM.read(location))
+print('EEPROM size {size}'.format(size=board.EEPROM.size()))
 ```
 
 **Misc**
