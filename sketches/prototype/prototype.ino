@@ -137,7 +137,6 @@ void AnalogHandler(int mode, String data){
      if(mode<=0){ //read
         int pin = Str2int(data);
         Serial.println(analogRead(pin));
-        
     }else{
         String sdata[2];
         split(sdata,2,data,'%');
@@ -149,7 +148,6 @@ void AnalogHandler(int mode, String data){
 
 void ConfigurePinHandler(String data){
     int pin = Str2int(data);
-    
     if(pin <=0){
         pinMode(-pin,INPUT);
     }else{
@@ -158,7 +156,6 @@ void ConfigurePinHandler(String data){
 }
 
 void shiftOutHandler(String data) {    
-  
     String sdata[4];
     split(sdata, 4, data, '%');
     int dataPin = sdata[0].toInt();
@@ -403,7 +400,6 @@ void SerialParser(void) {
   else if (cmd == "sz") {  
       sizeEEPROM();
   }  
-
 }
 
 void setup()  {
