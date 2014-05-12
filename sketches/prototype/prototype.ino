@@ -1,6 +1,7 @@
 #include <SoftwareSerial.h>
 #include <Wire.h>
 #include <Servo.h>
+#include <EEPROM.h>
 
 SoftwareSerial *sserial = NULL;
 Servo servos[8];
@@ -301,6 +302,19 @@ void SV_write_ms(String data) {
     servos[pos].writeMicroseconds(uS);
 }
 
+void sizeEEPROM() {
+    Serial.println(E2END + 1);
+}
+
+void EEPROMHandler(int mode, String data) {
+    String sdata[2];
+    split(sdata, 2, data, '%');
+    if (mode == 0) {  
+        EEPROM.write(Str2int(sdata[0]), Str2int(sdata[1]));  
+    } else {
+        Serial.println(EEPROM.read(Str2int(sdata[0])));
+    }
+}
 
 void SerialParser(void) {
   char readChar[64];
@@ -377,7 +391,15 @@ void SerialParser(void) {
   else if (cmd == "si") {
       shiftInHandler(data);
   }
-
+  else if (cmd == "eewr") {
+      EEPROMHandler(0, data);   
+  } 
+  else if (cmd == "eer") {
+      EEPROMHandler(1, data);   
+  }  
+  else if (cmd == "sz") {  
+      sizeEEPROM();
+  }  
 }
 
 void setup()  {
