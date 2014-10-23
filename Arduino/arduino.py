@@ -310,7 +310,7 @@ class Arduino(object):
         length of melody should be of same
         length as length of duration
 
-        Melodies of the following lenght, can cause trouble
+        Melodies of the following length, can cause trouble
         when playing it multiple times.
             board.Melody(9,["C4","G3","G3","A3","G3",0,"B3","C4"],
                                                 [4,8,8,4,4,4,4,4])
