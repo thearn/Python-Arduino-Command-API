@@ -8,7 +8,7 @@ def Blink(led_pin, baud, port=""):
     Blinks an LED in 1 sec intervals
     """
     board = Arduino(baud, port=port)
-    board.pinMode(13, "OUTPUT")
+    board.pinMode(led_pin, "OUTPUT")
     while True:
         board.digitalWrite(led_pin, "LOW")
         print board.digitalRead(led_pin)  # confirm LOW (0)
