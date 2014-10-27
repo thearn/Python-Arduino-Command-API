@@ -24,6 +24,7 @@ from Arduino import Arduino
 import time
 
 board = Arduino('9600') #plugged in via USB, serial com at rate 9600
+board.pinMode(13, "OUTPUT")
 
 while True:
     board.digitalWrite(13, "LOW")
