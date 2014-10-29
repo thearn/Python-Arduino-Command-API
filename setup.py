@@ -8,6 +8,6 @@ setup(name='arduino-python',
       author='Tristan Hearn',
       author_email='tristanhearn@gmail.com',
       url='https://github.com/thearn/Python-Arduino-Command-API',
-      license='Apache 2.0',
+      license='MIT',
       packages=['Arduino'],
       )
