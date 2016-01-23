@@ -1,7 +1,8 @@
 #include <SoftwareSerial.h>
 #include <Wire.h>
 #include <Servo.h>
-#include <EEPROM.h>
+#include "DHT.h"
+#include <IRremote.h>
 
 SoftwareSerial *sserial = NULL;
 Servo servos[8];
@@ -93,7 +94,7 @@ uint8_t readCapacitivePin(String data) {
   //return cycles;
   Serial.println(cycles);
 }
-
+/*
 void Tone(String data){
   int idx = data.indexOf('%');
   int len = Str2int(data.substring(0,idx));
@@ -118,6 +119,19 @@ void ToneNo(String data){
   int pin = Str2int(data);
   noTone(pin);
 } 
+*/
+
+//Ir setup code
+int RECV_PIN = 28; //defining pin for IR sensor
+
+IRrecv irrecv(RECV_PIN);
+
+decode_results results;
+
+//Ultra set up code
+//defining pins
+#define trigPin 26
+#define echoPin 5
 
 void DigitalHandler(int mode, String data){
       int pin = Str2int(data);
@@ -302,19 +316,39 @@ void SV_write_ms(String data) {
     servos[pos].writeMicroseconds(uS);
 }
 
-void sizeEEPROM() {
-    Serial.println(E2END + 1);
+void DHT_read(String data) {
+     String sdata[2];
+     split(sdata,2,data,'%');
+     int pin = Str2int(sdata[0]);
+     // type can be 11 21 22     
+     int type = Str2int(sdata[1]);
+     DHT dht(pin, type);
+     dht.begin();
+     float h = dht.readHumidity();
+     float t = dht.readTemperature();
+     Serial.print(h);
+     Serial.print(" ");
+     Serial.println(t);
 }
 
-void EEPROMHandler(int mode, String data) {
-    String sdata[2];
-    split(sdata, 2, data, '%');
-    if (mode == 0) {  
-        EEPROM.write(Str2int(sdata[0]), Str2int(sdata[1]));  
-    } else {
-        Serial.println(EEPROM.read(Str2int(sdata[0])));
-    }
+void IR_read() {  //this is the function for Ir receiver
+     if (irrecv.decode(&results)) {
+       Serial.println(results.value, HEX);
+       irrecv.resume(); // Receive the next value
+     }
 }
+
+void Ul_read() { //this is the function for ultra sensor
+     long duration, distance;
+     digitalWrite(trigPin, LOW);  
+     delayMicroseconds(2); 
+     digitalWrite(trigPin, HIGH);
+     delayMicroseconds(10); 
+     digitalWrite(trigPin, LOW);
+     duration = pulseIn(echoPin, HIGH);
+     distance = (duration/2) / 29.1;
+     Serial.println(distance);
+   }
 
 void SerialParser(void) {
   char readChar[64];
@@ -376,12 +410,12 @@ void SerialParser(void) {
   else if (cmd == "version") {
       Version();   
   }
-  else if (cmd == "to") {
+/*  else if (cmd == "to") {
       Tone(data);   
   } 
   else if (cmd == "nto") {
       ToneNo(data);   
-  }  
+  }  */
   else if (cmd == "cap") {
       readCapacitivePin(data);   
   }
@@ -391,23 +425,30 @@ void SerialParser(void) {
   else if (cmd == "si") {
       shiftInHandler(data);
   }
-  else if (cmd == "eewr") {
-      EEPROMHandler(0, data);   
-  } 
-  else if (cmd == "eer") {
-      EEPROMHandler(1, data);   
-  }  
-  else if (cmd == "sz") {  
-      sizeEEPROM();
-  }  
+
+  else if (cmd == "dht") {
+      // read humidity and temperature
+      DHT_read(data);
+  }
+  
+  else if (cmd == "irrecv") {
+      // read ir data
+      IR_read();
+  }
+  
+  else if (cmd == "ultra") {
+      // read ultrasonic distance sensor
+      Ul_read();
+  }
+
 }
 
 void setup()  {
-  Serial.begin(9600); 
-    while (!Serial) {
-    ; // wait for serial port to connect. Needed for Leonardo only
+  Serial.begin(921600);
+  irrecv.enableIRIn();
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
   }
-}
 
 void loop() {
    SerialParser();
