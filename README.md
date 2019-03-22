@@ -39,14 +39,14 @@ while True:
 - Any [Arduino compatible microcontroller](https://www.sparkfun.com/categories/242) with at least 14KB of flash memory
 
 ## Installation:
-I have used Python 3.7x
-Install pyserial
-Open ADMINISTATOR CMD
-Go to your Python Path
+I have used Python 3.7x.
+Install pyserial.
+Open ADMINISTATOR CMD.
+Go to your Python Path.
 EX cd C:\Program Files\Python37
-Install pyserial
-pip install pyserial( Update if update is found)
-pip install arduino-python
+Install pyserial.
+pip install pyserial( Update if update is found).
+pip install arduino-python.
 
 ## Setup:
 1. Verify that your Arduino board communicates at the baud rate specified in the
