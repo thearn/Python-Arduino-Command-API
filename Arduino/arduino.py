@@ -8,7 +8,7 @@ from serial.tools import list_ports
 
 import sys
 if sys.platform.startswith('win'):
-    import _winreg as winreg
+    import winreg
 else:
     import glob
 
@@ -24,7 +24,7 @@ def enumerate_serial_ports():
     path = 'HARDWARE\\DEVICEMAP\\SERIALCOMM'
     try:
         key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, path)
-    except OSError: # TODO
+    except OSError:
         raise Exception
 
     for i in itertools.count():
