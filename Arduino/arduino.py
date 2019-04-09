@@ -172,7 +172,7 @@ class Arduino(object):
             self.sr.flush()
         except:
             pass
-        rd = self.sr.readline().replace("\r\n", "")
+        rd = self.sr.readline().decode("utf-8").replace("\r\n", "")
         try:
             return int(rd)
         except:
@@ -215,7 +215,7 @@ class Arduino(object):
             self.sr.flush()
         except:
             pass
-        rd = self.sr.readline().replace("\r\n", "")
+        rd = self.sr.readline().decode("utf-8").replace("\r\n", "")
         try:
             return float(rd)
         except:
@@ -262,7 +262,7 @@ class Arduino(object):
                 self.sr.flush()
             except:
                 pass
-            rd = self.sr.readline().replace("\r\n", "")
+            rd = self.sr.readline().decode("utf-8").replace("\r\n", "")
             if rd.isdigit():
                 if (int(rd) > 1):
                     durations.append(int(rd))
@@ -296,7 +296,7 @@ class Arduino(object):
             self.sr.flush()
         except:
             pass
-        rd = self.sr.readline().replace("\r\n", "")
+        rd = self.sr.readline().decode("utf-8").replace("\r\n", "")
         try:
             return int(rd)
         except:
@@ -372,7 +372,7 @@ class Arduino(object):
         '''
         cmd_str = build_cmd_str("cap", (pin,))
         self.sr.write(str.encode(cmd_str))
-        rd = self.sr.readline().replace("\r\n", "")
+        rd = self.sr.readline().decode("utf-8").replace("\r\n", "")
         if rd.isdigit():
             return int(rd)
 
@@ -405,7 +405,7 @@ class Arduino(object):
         cmd_str = build_cmd_str("si", (dataPin, clockPin, pinOrder))
         self.sr.write(str.encode(cmd_str))
         self.sr.flush()
-        rd = self.sr.readline().replace("\r\n", "")
+        rd = self.sr.readline().decode("utf-8").replace("\r\n", "")
         if rd.isdigit():
             return int(rd)
 
@@ -446,7 +446,7 @@ class Servos(object):
             self.sr.write(str.encode(cmd_str))
             self.sr.flush()
 
-            rd = self.sr.readline().replace("\r\n", "")
+            rd = self.sr.readline().decode("utf-8").replace("\r\n", "")
             if rd:
                 break
             else:
@@ -489,7 +489,7 @@ class Servos(object):
             self.sr.flush()
         except:
             pass
-        rd = self.sr.readline().replace("\r\n", "")
+        rd = self.sr.readline().decode("utf-8").replace("\r\n", "")
         try:
             angle = int(rd)
             return angle
