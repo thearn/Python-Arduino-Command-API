@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
   name="arduino-python3",
-  version="0.1",
+  version="0.2",
   install_requires=['pyserial'],
   author="Morten Kals",
   author_email="morten@kals.no",
