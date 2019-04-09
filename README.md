@@ -1,13 +1,15 @@
-# Python Arduino Command API
+# Python3 Arduino Command API
 
-The Python Arduino Command API is a light-weight Python library for
+This API is forked from the original [Python Arduino Command API](https://github.com/thearn/Python-Arduino-Command-API) to add support for Python 3.
+
+The Python Arduino Command API is a lightweight Python library for
 communicating with [Arduino microcontroller boards](http://www.arduino.cc/) from a connected computer using
-standard serial IO, either over a physical wire 
+standard serial IO, either over a physical wire
 or wirelessly. It is written using a custom protocol, similar to [Firmata](http://firmata.org/wiki/Main_Page).
 
-This allows a user to quickly protoype programs for Arduino using Python code, or to
+This allows a user to quickly prototype programs for Arduino using Python code, or to
 simply read/control/troubleshoot/experiment
-with harware connected to an Arduino board without ever having to recompile and reload sketches to the board itself.
+with hardware connected to an Arduino board without ever having to recompile and reload sketches to the board itself.
 
 Method names within the Python Arduino Command API are designed to be as close
 as possible to their Arduino programming language counterparts
@@ -34,12 +36,12 @@ while True:
 ```
 
 ## Requirements:
-- [Python](http://python.org/) 2.3 or higher (Python 3.x not yet tested, but would probably work)
+- [Python](http://python.org/) 3.7 tested on Windows and macOS.
 - [pyserial](http://pyserial.sourceforge.net/) 2.6 or higher
 - Any [Arduino compatible microcontroller](https://www.sparkfun.com/categories/242) with at least 14KB of flash memory
 
 ## Installation:
-Either run `pip install arduino-python` from a command line, or run `python setup.py
+Either run `pip install arduino-python3` from a command line, or run `python setup.py
 build install` from the source directory to install this library.
 
 ## Setup:
@@ -47,7 +49,7 @@ build install` from the source directory to install this library.
 `setup()` function (line 348) in `prototype.ino`. Change it there if necessary.
 2. Load the `prototype.ino` sketch onto your Arduino board, using the Arduino IDE.
 3. Set up some kind of serial I/O communication between the Arduino board and your computer (via physical USB cable,
-bluetooth, xbee, etc + associated drivers)
+Bluetooth, xbee, etc. + associated drivers)
 4. Add `from Arduino import Arduino` into your python script to communicate with your Arduino
 
 For a collection of examples, see `examples.py`. This file contains methods which replicate
@@ -161,9 +163,9 @@ board.Servos.detach(9) #free pin 9
 
 - `Arduino.SoftwareSerial.begin(ss_rxPin, ss_txPin, ss_device_baud)` initialize software serial device on
 specified pins.
-Only one sofware serial device can be used at a time. Existing software serial instance will
-be be overwritten by calling this method, both in Python and on the arduino board.
-- `Arduino.SoftwareSerial.write(data)` send data using the arduino 'write' function to the existing software
+Only one software serial device can be used at a time. Existing software serial instance will
+be overwritten by calling this method, both in Python and on the Arduino board.
+- `Arduino.SoftwareSerial.write(data)` send data using the Arduino 'write' function to the existing software
 serial connection.
 - `Arduino.SoftwareSerial.read()` returns one byte from the existing software serial connection
 
@@ -185,7 +187,7 @@ response_char = board.SoftwareSerial.read() #read response character
 location = 42
 value = 10 # 0-255(byte)
 
-board.EEPROM.write(location, 10) 
+board.EEPROM.write(location, 10)
 print(board.EEPROM.read(location))
 print('EEPROM size {size}'.format(size=board.EEPROM.size()))
 ```
@@ -201,4 +203,3 @@ print('EEPROM size {size}'.format(size=board.EEPROM.size()))
 - Include a wizard which generates 'prototype.ino' with selected serial baud rate and Arduino function support
 (to help reduce memory requirements).
 - Multi-serial support for Arduino mega (`Serial1.read()`, etc)
-
