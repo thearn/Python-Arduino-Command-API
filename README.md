@@ -25,7 +25,7 @@ as possible to their Arduino programming language counterparts
 from Arduino import Arduino
 import time
 
-board = Arduino('9600') #plugged in via USB, serial com at rate 9600
+board = Arduino('115200') #plugged in via USB, serial com at rate 115200
 board.pinMode(13, "OUTPUT")
 
 while True:
@@ -76,7 +76,7 @@ $ python tests/test_arduino.py
 Arduino.
 
 ```python
-board = Arduino("9600") #Example
+board = Arduino("115200") #Example
 ```
 
 The device name / COM port of the connected Arduino will be auto-detected.
@@ -84,17 +84,17 @@ If there are more than one Arduino boards connected,
 the desired COM port can be also be passed as an optional argument:
 
 ```python
-board = Arduino("9600", port="COM3") #Windows example
+board = Arduino("115200", port="COM3") #Windows example
 ```
 ```python
-board = Arduino("9600", port="/dev/tty.usbmodemfa141") #OSX example
+board = Arduino("115200", port="/dev/tty.usbmodemfa141") #OSX example
 ```
 
 A time-out for reading from the Arduino can also be specified as an optional
 argument:
 
 ```python
-board = Arduino("9600", timeout=2) #Serial reading functions will
+board = Arduino("115200", timeout=2) #Serial reading functions will
 #wait for no more than 2 seconds
 ```
 
@@ -190,6 +190,41 @@ value = 10 # 0-255(byte)
 board.EEPROM.write(location, 10)
 print(board.EEPROM.read(location))
 print('EEPROM size {size}'.format(size=board.EEPROM.size()))
+```
+
+**DHT**
+Read data from DHT temperature and humidity sensors based on the
+Adafruit [DHT sensor library](https://github.com/adafruit/DHT-sensor-library).
+
+Pass as arguments the pin the sensor is connected to (as an integer) and the sensor type you are using as an integer (see list below).
+
+There are five sensors that work with this library:
+- 0 = DHT 11 (blue cage, less accurate)
+- 1 = DHT 12
+- 2 = DHT 21
+- 3 = DHT 22 (white cage)
+- 4 = AM2301
+
+The function returns an array of three elements:
+1. humidity (in %)
+2. temperature (in celcius)
+3. heat index (in celcius)
+
+If there is an error with the reading (eg. the selected sensor is wrong) all values will return as zero.
+
+```python
+#DHT sensor example
+pin = 7
+sensorType = 0
+
+data = board.dht(pin, sensorType)
+[humidity, temperature, heatIndex] = data
+
+reply =  "Humidity = " + str(humidity) + " % \t"
+reply += "Temperature = " + str(temperature) + " ˙C \t"
+reply += "Heat Index = " + str(heatIndex) + " ˙C"
+
+print(reply)
 ```
 
 **Misc**

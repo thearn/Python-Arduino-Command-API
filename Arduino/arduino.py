@@ -96,7 +96,7 @@ def get_version(sr):
 
 class Arduino(object):
 
-    def __init__(self, baud=9600, port=None, timeout=2, sr=None):
+    def __init__(self, baud=115200, port=None, timeout=2, sr=None):
         """
         Initializes serial communication with Arduino if no connection is
         given. Attempts to self-select COM port, if not specified.

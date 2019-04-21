@@ -58,7 +58,7 @@ class ArduinoTestCase(unittest.TestCase):
 
     def setUp(self):
         from Arduino.arduino import Arduino
-        self.mock_serial = MockSerial(9600, '/dev/ttyACM0')
+        self.mock_serial = MockSerial(115200, '/dev/ttyACM0')
         self.board = Arduino(sr=self.mock_serial)
 
 

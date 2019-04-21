@@ -31,7 +31,7 @@ class TestBasics(unittest.TestCase):
         board = None
         try:
             # This will trigger automatic port resolution.
-            board = Arduino(9600)
+            board = Arduino(115200)
         finally:
             if board:
                 board.close()
@@ -48,7 +48,7 @@ class TestBasics(unittest.TestCase):
         from Arduino import Arduino
         board = None
         try:
-            board = Arduino(9600, port=port)
+            board = Arduino(115200, port=port)
         finally:
             if board:
                 board.close()
