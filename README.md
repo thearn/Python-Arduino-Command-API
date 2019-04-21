@@ -1,4 +1,4 @@
-# Python3 Arduino Command API
+# Arduino-Python3 Command API
 
 This API is forked from the original [Python Arduino Command API](https://github.com/thearn/Python-Arduino-Command-API) to add support for Python 3.
 
