@@ -2,6 +2,7 @@
 #include <Wire.h>
 #include <Servo.h>
 #include <EEPROM.h>
+#include <DHT.h>
 
 SoftwareSerial *sserial = NULL;
 Servo servos[8];
@@ -316,6 +317,49 @@ void EEPROMHandler(int mode, String data) {
     }
 }
 
+int dhtSensorPin = -1;
+DHT dhtSensor(dhtSensorPin, DHT11);
+
+void dht(String data) {
+  
+    String sdata[2];
+    split(sdata, 2, data, '%');
+    int dataPin = sdata[0].toInt();
+    int sensorNumber = sdata[1].toInt();
+    
+    int sensorType = DHT11; // assume DHT11 as default
+    if (sensorNumber == 1) {
+      sensorType = DHT12;
+    } else if (sensorNumber == 2) {
+      sensorType = DHT21;
+    } else if (sensorNumber == 2) {
+      sensorType = DHT22;
+    } else if (sensorNumber == 2) {
+      sensorType = AM2301;
+    }
+
+    // do not initialize new sensor if we are reading repeatedly from same sensor
+    if (dataPin != dhtSensorPin) {
+        dhtSensorPin = dataPin;
+        dhtSensor = DHT(dataPin, sensorType);
+        dhtSensor.begin();
+    }
+
+    // Reading temperature or humidity takes about 250 milliseconds!
+    // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
+    float h = dhtSensor.readHumidity();
+    // Read temperature as Celsius (the default)
+    float t = dhtSensor.readTemperature();
+    
+    if (isnan(h) || isnan(t)) {
+        Serial.println("0&0&0");
+        return;
+    }
+    
+    float hic = dhtSensor.computeHeatIndex(t, h, false);
+    Serial.println(String(h) + "&" + String(t) + "&" + String(hic));
+}
+
 void SerialParser(void) {
   char readChar[64];
   Serial.readBytesUntil(33,readChar,64);
@@ -399,16 +443,20 @@ void SerialParser(void) {
   }  
   else if (cmd == "sz") {  
       sizeEEPROM();
-  }  
-}
-
-void setup()  {
-  Serial.begin(9600); 
-    while (!Serial) {
-    ; // wait for serial port to connect. Needed for Leonardo only
+  }
+  else if (cmd == "dht") {
+      dht(data);
   }
 }
 
+void setup()  {
+  Serial.begin(115200); 
+    while (!Serial) {
+      ; // wait for serial port to connect. Needed for Leonardo only
+    }
+  Serial.println("connected");
+}
+
 void loop() {
-   SerialParser();
-   }
+  SerialParser();
+}

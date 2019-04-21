@@ -108,6 +108,7 @@ class Arduino(object):
                     raise ValueError("Could not find port.")
             else:
                 sr = serial.Serial(port, baud, timeout=timeout)
+                sr.readline()
         sr.flush()
         self.sr = sr
         self.SoftwareSerial = SoftwareSerial(self)
@@ -126,7 +127,7 @@ class Arduino(object):
            pin : digital pin number
            val : either "HIGH" or "LOW"
         """
-        if val == "LOW":
+        if val.upper() == "LOW":
             pin_ = -pin
         else:
             pin_ = pin
@@ -205,7 +206,7 @@ class Arduino(object):
         returns:
            duration : pulse length measurement
         """
-        if val == "LOW":
+        if val.upper() == "LOW":
             pin_ = -pin
         else:
             pin_ = pin
@@ -250,7 +251,7 @@ class Arduino(object):
         pinMode(pin, INPUT);
         long duration = pulseIn(pin, HIGH);
         """
-        if val == "LOW":
+        if val.upper() == "LOW":
             pin_ = -pin
         else:
             pin_ = pin
@@ -410,6 +411,57 @@ class Arduino(object):
             return int(rd)
 
 
+    def dht(self, pin, module = 0):
+        """
+        Read data from dht temperature and humidity sensors based on the
+        Adafruit DHT sensor library.
+        https://github.com/adafruit/DHT-sensor-library
+
+        Guide for using library:
+        https://learn.adafruit.com/dht/using-a-dhtxx-sensor
+
+        There are five sensors that work with this library:
+        - DHT 11: blue cage, less accurate
+        - DHT 12:
+        - DHT 21:
+        - DHT 22: white cage
+        - AM2301:
+        Input:
+            pin (int): pin for data
+            module (int):   0 = DHT 11 (default),
+                            1 = DHT 12,
+                            2 = DHT 21,
+                            3 = DHT 22,
+                            4 = AM2301
+        Output:
+            [float, float, float] in the format:
+            [ humidity in %,
+              temperature in celcius,
+              heat index in celcius ]
+        """
+        try:
+            if not (0 <= module <= 4):
+                print("unknown module, must be in range 0 to 4. Using 0 (DHT 11).")  # raise exception
+        except:
+            module = 0
+            print("module must be spesified using an integer. Using 0 (DHT 11).")
+
+        cmd_str = build_cmd_str("dht", (pin, module,))
+        try:
+            self.sr.write(str.encode(cmd_str))
+            self.sr.flush()
+        except:
+            pass
+        rd = self.sr.readline().decode("utf-8").replace("\r\n", "")
+        try:
+            strings = rd.split("&")
+            return [float(s) for s in strings]
+        except:
+            return None
+
+
+
+
 class Shrimp(Arduino):
 
     def __init__(self):
@@ -495,6 +547,7 @@ class Servos(object):
             return angle
         except:
             return None
+
 
 
 class SoftwareSerial(object):
