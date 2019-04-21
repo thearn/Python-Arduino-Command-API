@@ -12,6 +12,7 @@ if sys.platform.startswith('win'):
 else:
     import glob
 
+libraryVersion = 'V0.4'
 
 log = logging.getLogger(__name__)
 
@@ -62,6 +63,7 @@ def find_port(baud, timeout):
         ports = enumerate_serial_ports()
     elif platform.system() == 'Darwin':
         ports = [i[0] for i in list_ports.comports()]
+        ports = ports[::-1]
     else:
         ports = glob.glob("/dev/ttyUSB*") + glob.glob("/dev/ttyACM*")
     for p in ports:
@@ -71,18 +73,26 @@ def find_port(baud, timeout):
         except (serial.serialutil.SerialException, OSError) as e:
             log.debug(str(e))
             continue
-        time.sleep(2)
+
+        sr.readline() # wait for board to start up again
+
         version = get_version(sr)
-        if version != 'version':
-            log.debug('Bad version {0}. This is not a Shrimp/Arduino!'.format(
-                version))
-            sr.close()
-            continue
+
+        if version != libraryVersion:
+            if version[0] == 'V' or version == "version":
+                print("You need to update the version of the Arduino-Python3 ",
+                      "library running on your Arduino. ",
+                      "Flash the prototype sketch again.")
+                return sr
+            else:
+                log.debug('Bad version {0}. This is not a Shrimp/Arduino!'.format(
+                    version))
+                sr.close()
+                continue
         log.info('Using port {0}.'.format(p))
         if sr:
             return sr
     return None
-
 
 def get_version(sr):
     cmd_str = build_cmd_str("version")
@@ -91,10 +101,11 @@ def get_version(sr):
         sr.flush()
     except Exception:
         return None
-    return sr.readline().replace("\r\n", "")
+    return sr.readline().decode("utf-8").replace("\r\n", "")
 
 
 class Arduino(object):
+
 
     def __init__(self, baud=115200, port=None, timeout=2, sr=None):
         """
@@ -108,7 +119,14 @@ class Arduino(object):
                     raise ValueError("Could not find port.")
             else:
                 sr = serial.Serial(port, baud, timeout=timeout)
-                sr.readline()
+                sr.readline() # wait til board has rebooted and is connected
+
+                # check version
+                if get_version(sr) != libraryVersion:
+                    print("You need to update the version of the Arduino-Python3 ",
+                          "library running on your Arduino. ",
+                          "Flash the prototype sketch again.")
+
         sr.flush()
         self.sr = sr
         self.SoftwareSerial = SoftwareSerial(self)
@@ -572,7 +590,7 @@ class SoftwareSerial(object):
             self.sr.flush()
         except:
             pass
-        response = self.sr.readline().replace("\r\n", "")
+        response = self.sr.readline().decode("utf-8").replace("\r\n", "")
         if response == "ss OK":
             self.connected = True
             return True
@@ -592,7 +610,7 @@ class SoftwareSerial(object):
                 self.sr.flush()
             except:
                 pass
-            response = self.sr.readline().replace("\r\n", "")
+            response = self.sr.readline().decode("utf-8").replace("\r\n", "")
             if response == "ss OK":
                 return True
         else:
@@ -607,7 +625,7 @@ class SoftwareSerial(object):
             cmd_str = build_cmd_str("sr")
             self.sr.write(str.encode(cmd_str))
             self.sr.flush()
-            response = self.sr.readline().replace("\r\n", "")
+            response = self.sr.readline().decode("utf-8").replace("\r\n", "")
             if response:
                 return response
         else:
@@ -632,7 +650,7 @@ class EEPROM(object):
         try:
             self.sr.write(str.encode(cmd_str))
             self.sr.flush()
-            response = self.sr.readline().replace("\r\n", "")
+            response = self.sr.readline().decode("utf-8").replace("\r\n", "")
             return int(response)
         except:
             return 0
@@ -664,7 +682,7 @@ class EEPROM(object):
         try:
             self.sr.write(str.encode(cmd_str))
             self.sr.flush()
-            response = self.sr.readline().replace("\r\n", "")
+            response = self.sr.readline().decode("utf-8").replace("\r\n", "")
             if response:
                 return int(response)
         except:

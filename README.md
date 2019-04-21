@@ -2,7 +2,7 @@
 
 This API is forked from the original [Python Arduino Command API](https://github.com/thearn/Python-Arduino-Command-API) to add support for Python 3.
 
-The Python Arduino Command API is a lightweight Python library for
+The Arduino-Python3 Command API is a lightweight Python library for
 communicating with [Arduino microcontroller boards](http://www.arduino.cc/) from a connected computer using
 standard serial IO, either over a physical wire
 or wirelessly. It is written using a custom protocol, similar to [Firmata](http://firmata.org/wiki/Main_Page).
@@ -11,7 +11,7 @@ This allows a user to quickly prototype programs for Arduino using Python code, 
 simply read/control/troubleshoot/experiment
 with hardware connected to an Arduino board without ever having to recompile and reload sketches to the board itself.
 
-Method names within the Python Arduino Command API are designed to be as close
+Method names within the Arduino-Python3 Command API are designed to be as close
 as possible to their Arduino programming language counterparts
 
 ## Simple usage example (LED blink)
@@ -25,7 +25,7 @@ as possible to their Arduino programming language counterparts
 from Arduino import Arduino
 import time
 
-board = Arduino('115200') #plugged in via USB, serial com at rate 115200
+board = Arduino() # plugged in via USB, serial com at rate 115200
 board.pinMode(13, "OUTPUT")
 
 while True:
@@ -193,6 +193,9 @@ print('EEPROM size {size}'.format(size=board.EEPROM.size()))
 ```
 
 **DHT**
+
+- `Arduino.dht(pin, module)` reads sensor values from the DHT sensor connected at the specified pin.
+
 Read data from DHT temperature and humidity sensors based on the
 Adafruit [DHT sensor library](https://github.com/adafruit/DHT-sensor-library).
 
@@ -207,10 +210,10 @@ There are five sensors that work with this library:
 
 The function returns an array of three elements:
 1. humidity (in %)
-2. temperature (in celcius)
-3. heat index (in celcius)
+2. temperature (in Celsius)
+3. heat index (in Celsius)
 
-If there is an error with the reading (eg. the selected sensor is wrong) all values will return as zero.
+If there is an error with the reading (e.g., the selected sensor is wrong) all values will return as zero.
 
 ```python
 #DHT sensor example

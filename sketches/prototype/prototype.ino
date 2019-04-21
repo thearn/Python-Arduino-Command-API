@@ -4,6 +4,11 @@
 #include <EEPROM.h>
 #include <DHT.h>
 
+void Version(){
+  Serial.println(F("V0.4"));
+}
+
+
 SoftwareSerial *sserial = NULL;
 Servo servos[8];
 int servo_pins[] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -24,10 +29,6 @@ void split(String results[], int len, String input, char spChar) {
     results[i] = temp.substring(0,idx);
     temp = temp.substring(idx+1);
   }
-}
-
-void Version(){
-  Serial.println("version");
 }
 
 uint8_t readCapacitivePin(String data) {

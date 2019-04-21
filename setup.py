@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
   name="arduino-python3",
-  version="0.3",
+  version="0.4",
   install_requires=['pyserial'],
   author="Morten Kals",
   author_email="morten@kals.no",
@@ -13,7 +13,7 @@ setuptools.setup(
   bridge for communicating with Arduino microcontroller boards. Extended to work with Python 3",
   long_description=long_description,
   long_description_content_type="text/markdown",
-  url='https://github.com/mkals/Python-Arduino-Command-API',
+  url='https://github.com/mkals/Arduino-Python3-Command-API',
   packages=['Arduino'],
   license='MIT',
 )
