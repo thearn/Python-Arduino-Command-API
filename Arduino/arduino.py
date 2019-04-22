@@ -79,16 +79,25 @@ def find_port(baud, timeout):
         version = get_version(sr)
 
         if version != libraryVersion:
-            if version[0] == 'V' or version == "version":
-                print("You need to update the version of the Arduino-Python3 ",
-                      "library running on your Arduino. ",
-                      "Flash the prototype sketch again.")
+            try:
+                ver = version[0]
+            except Exception:
+                ver = ''
+
+            if ver == 'V' or version == "version":
+                print("You need to update the version of the Arduino-Python3",
+                      "library running on your Arduino.")
+                print("The Arduino sketch is", version)
+                print("The Python installation is", libraryVersion)
+                print("Flash the prototype sketch again.")
                 return sr
-            else:
-                log.debug('Bad version {0}. This is not a Shrimp/Arduino!'.format(
-                    version))
-                sr.close()
-                continue
+
+            # established to be the wrong board
+            log.debug('Bad version {0}. This is not a Shrimp/Arduino!'.format(
+                version))
+            sr.close()
+            continue
+
         log.info('Using port {0}.'.format(p))
         if sr:
             return sr
@@ -121,11 +130,21 @@ class Arduino(object):
                 sr = serial.Serial(port, baud, timeout=timeout)
                 sr.readline() # wait til board has rebooted and is connected
 
-                # check version
-                if get_version(sr) != libraryVersion:
-                    print("You need to update the version of the Arduino-Python3 ",
-                          "library running on your Arduino. ",
-                          "Flash the prototype sketch again.")
+                version = get_version(sr)
+
+                if version != libraryVersion:
+                    # check version
+                    try:
+                        ver = version[0]
+                    except Exception:
+                        ver = ''
+
+                    if ver == 'V' or version == "version":
+                        print("You need to update the version of the Arduino-Python3",
+                              "library running on your Arduino.")
+                        print("The Arduino sketch is", version)
+                        print("The Python installation is", libraryVersion)
+                        print("Flash the prototype sketch again.")
 
         sr.flush()
         self.sr = sr
