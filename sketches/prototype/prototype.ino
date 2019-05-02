@@ -1,8 +1,12 @@
 #include <SoftwareSerial.h>
 #include <Wire.h>
-#include <Servo.h>
+//#include <Servo.h>
 #include <EEPROM.h>
 #include <DHT.h>
+
+// NOTE: Requires new libraries for screens:
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 
 void Version(){
   Serial.println(F("V0.4"));
@@ -10,7 +14,7 @@ void Version(){
 
 
 SoftwareSerial *sserial = NULL;
-Servo servos[8];
+//Servo servos[8];
 int servo_pins[] = {0, 0, 0, 0, 0, 0, 0, 0};
 boolean connected = false;
 
@@ -249,59 +253,59 @@ void pulseInSHandler(String data){
 }
 
 void SV_add(String data) {
-    String sdata[3];
-    split(sdata,3,data,'%');
-    int pin = Str2int(sdata[0]);
-    int min = Str2int(sdata[1]);
-    int max = Str2int(sdata[2]);
-    int pos = -1;
-    for (int i = 0; i<8;i++) {
-        if (servo_pins[i] == pin) { //reset in place
-            servos[pos].detach();
-            servos[pos].attach(pin, min, max);
-            servo_pins[pos] = pin;
-            Serial.println(pos);
-            return;
-            }
-        }
-    for (int i = 0; i<8;i++) {
-        if (servo_pins[i] == 0) {pos = i;break;} // find spot in servo array
-        }
-    if (pos == -1) {;} //no array position available!
-    else {
-        servos[pos].attach(pin, min, max);
-        servo_pins[pos] = pin;
-        Serial.println(pos);
-        }
+//    String sdata[3];
+//    split(sdata,3,data,'%');
+//    int pin = Str2int(sdata[0]);
+//    int min = Str2int(sdata[1]);
+//    int max = Str2int(sdata[2]);
+//    int pos = -1;
+//    for (int i = 0; i<8;i++) {
+//        if (servo_pins[i] == pin) { //reset in place
+//            servos[pos].detach();
+//            servos[pos].attach(pin, min, max);
+//            servo_pins[pos] = pin;
+//            Serial.println(pos);
+//            return;
+//            }
+//        }
+//    for (int i = 0; i<8;i++) {
+//        if (servo_pins[i] == 0) {pos = i;break;} // find spot in servo array
+//        }
+//    if (pos == -1) {;} //no array position available!
+//    else {
+//        servos[pos].attach(pin, min, max);
+//        servo_pins[pos] = pin;
+//        Serial.println(pos);
+//        }
 }
 
 void SV_remove(String data) {
-    int pos = Str2int(data);
-    servos[pos].detach();
-    servo_pins[pos] = 0;
+//    int pos = Str2int(data);
+//    servos[pos].detach();
+//    servo_pins[pos] = 0;
 }
 
 void SV_read(String data) {
-    int pos = Str2int(data);
-    int angle;
-    angle = servos[pos].read();
-    Serial.println(angle);
+//    int pos = Str2int(data);
+//    int angle;
+//    angle = servos[pos].read();
+//    Serial.println(angle);
 }
 
 void SV_write(String data) {
-    String sdata[2];
-    split(sdata,2,data,'%');
-    int pos = Str2int(sdata[0]);
-    int angle = Str2int(sdata[1]);
-    servos[pos].write(angle);
+//    String sdata[2];
+//    split(sdata,2,data,'%');
+//    int pos = Str2int(sdata[0]);
+//    int angle = Str2int(sdata[1]);
+//    servos[pos].write(angle);
 }
 
 void SV_write_ms(String data) {
-    String sdata[2];
-    split(sdata,2,data,'%');
-    int pos = Str2int(sdata[0]);
-    int uS = Str2int(sdata[1]);
-    servos[pos].writeMicroseconds(uS);
+//    String sdata[2];
+//    split(sdata,2,data,'%');
+//    int pos = Str2int(sdata[0]);
+//    int uS = Str2int(sdata[1]);
+//    servos[pos].writeMicroseconds(uS);
 }
 
 void sizeEEPROM() {
@@ -324,13 +328,13 @@ DHT dhtSensor(dhtSensorPin, DHT11);
 void dht(String data) {
   
     String sdata[2];
-    split(sdata, 2, data, '%');
     int dataPin = sdata[0].toInt();
     int sensorNumber = sdata[1].toInt();
     
     int sensorType = DHT11; // assume DHT11 as default
     if (sensorNumber == 1) {
-      sensorType = DHT12;
+   //    split(sdata, 2, data, '%');
+   sensorType = DHT12;
     } else if (sensorNumber == 2) {
       sensorType = DHT21;
     } else if (sensorNumber == 2) {
@@ -361,6 +365,45 @@ void dht(String data) {
     Serial.println(String(h) + "&" + String(t) + "&" + String(hic));
 }
 
+
+// TODO: Fix the stuttering problem being caused by the program calling the display parameter multiple times.
+
+// A large function to set up the display, clear it from previously, set a line(s) of text, and write it.
+// TODO: I was unable to break this apart into different functions to play around with in Python, due to issues with variable scope. I will come back to this.
+void displayText(String data) {
+  
+  int screen_height = 32;
+  int screen_width = 128;
+  
+  // The analog pin number connected to the reset pin of the screen (SDA).
+  int reset_pin = 4;
+
+  // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins).
+  Adafruit_SSD1306 display(screen_width, screen_height, &Wire, 4);  
+
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  
+  // Clears previously displayed data and resets the cursor and text colour.
+  display.clearDisplay();
+  display.setCursor(0,0);
+  display.setTextColor(WHITE);
+
+  // The input data string contains the text to be written, along with %#, 
+  // where # is the font size. This sets the font size by reading the last 
+  // character of the input data (by default it is 1), and converting it 
+  // to an int. Once that is done, the last two characters are deleted.
+  int font_size = data[data.length() - 1] - 48;
+  display.setTextSize(font_size);
+  data.remove(data.length() - 2);
+
+  display.print(data);
+
+  // Prints the above to the display. Relatively resource-intensive.
+  display.display();
+  delay(50);
+}
+
+// TODO: try a switch statement, might save memory.
 void SerialParser(void) {
   char readChar[64];
   Serial.readBytesUntil(33,readChar,64);
@@ -447,6 +490,10 @@ void SerialParser(void) {
   }
   else if (cmd == "dht") {
       dht(data);
+  }
+  // screen display functions go here.
+  else if (cmd == "dst") {
+      displayText(data);
   }
 }
 
