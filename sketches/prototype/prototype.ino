@@ -9,7 +9,7 @@
 #include <Adafruit_SSD1306.h>
 
 void Version(){
-  Serial.println(F("V0.4"));
+  Serial.println(F("V0.5"));
 }
 
 
@@ -88,7 +88,7 @@ uint8_t readCapacitivePin(String data) {
   else if (*pin & bitmask) { cycles = 16;}
 
   // Discharge the pin again by setting it low and output
-  //  It's important to leave the pins low if you want to 
+  //  It's important to leave the pins low if you want to
   //  be able to touch more than 1 sensor at a time - if
   //  the sensor is left pulled high, when you touch
   //  two sensors, your body will transfer the charge between
@@ -118,12 +118,12 @@ void Tone(String data){
     delay(pause);
     noTone(pin);
   }
-} 
+}
 
 void ToneNo(String data){
   int pin = Str2int(data);
   noTone(pin);
-} 
+}
 
 void DigitalHandler(int mode, String data){
       int pin = Str2int(data);
@@ -161,7 +161,7 @@ void ConfigurePinHandler(String data){
     }
 }
 
-void shiftOutHandler(String data) {    
+void shiftOutHandler(String data) {
     String sdata[4];
     split(sdata, 4, data, '%');
     int dataPin = sdata[0].toInt();
@@ -207,10 +207,10 @@ void SS_write(String data) {
  char buffer[len];
  data.toCharArray(buffer,len);
  Serial.println("ss OK");
- sserial->write(buffer); 
+ sserial->write(buffer);
 }
 void SS_read(String data) {
- char c = sserial->read(); 
+ char c = sserial->read();
  Serial.println(c);
 }
 
@@ -219,10 +219,10 @@ void pulseInHandler(String data){
     long duration;
     if(pin <=0){
           pinMode(-pin, INPUT);
-          duration = pulseIn(-pin, LOW);      
+          duration = pulseIn(-pin, LOW);
     }else{
           pinMode(pin, INPUT);
-          duration = pulseIn(pin, HIGH);      
+          duration = pulseIn(pin, HIGH);
     }
     Serial.println(duration);
 }
@@ -238,7 +238,7 @@ void pulseInSHandler(String data){
           delayMicroseconds(5);
           digitalWrite(-pin, HIGH);
           pinMode(-pin, INPUT);
-          duration = pulseIn(-pin, LOW);      
+          duration = pulseIn(-pin, LOW);
     }else{
           pinMode(pin, OUTPUT);
           digitalWrite(pin, LOW);
@@ -247,7 +247,7 @@ void pulseInSHandler(String data){
           delayMicroseconds(5);
           digitalWrite(pin, LOW);
           pinMode(pin, INPUT);
-          duration = pulseIn(pin, HIGH);      
+          duration = pulseIn(pin, HIGH);
     }
     Serial.println(duration);
 }
@@ -315,8 +315,8 @@ void sizeEEPROM() {
 void EEPROMHandler(int mode, String data) {
     String sdata[2];
     split(sdata, 2, data, '%');
-    if (mode == 0) {  
-        EEPROM.write(Str2int(sdata[0]), Str2int(sdata[1]));  
+    if (mode == 0) {
+        EEPROM.write(Str2int(sdata[0]), Str2int(sdata[1]));
     } else {
         Serial.println(EEPROM.read(Str2int(sdata[0])));
     }
@@ -326,11 +326,11 @@ int dhtSensorPin = -1;
 DHT dhtSensor(dhtSensorPin, DHT11);
 
 void dht(String data) {
-  
+
     String sdata[2];
     int dataPin = sdata[0].toInt();
     int sensorNumber = sdata[1].toInt();
-    
+
     int sensorType = DHT11; // assume DHT11 as default
     if (sensorNumber == 1) {
    //    split(sdata, 2, data, '%');
@@ -355,12 +355,12 @@ void dht(String data) {
     float h = dhtSensor.readHumidity();
     // Read temperature as Celsius (the default)
     float t = dhtSensor.readTemperature();
-    
+
     if (isnan(h) || isnan(t)) {
         Serial.println("0&0&0");
         return;
     }
-    
+
     float hic = dhtSensor.computeHeatIndex(t, h, false);
     Serial.println(String(h) + "&" + String(t) + "&" + String(hic));
 }
@@ -371,26 +371,26 @@ void dht(String data) {
 // A large function to set up the display, clear it from previously, set a line(s) of text, and write it.
 // TODO: I was unable to break this apart into different functions to play around with in Python, due to issues with variable scope. I will come back to this.
 void displayText(String data) {
-  
+
   int screen_height = 32;
   int screen_width = 128;
-  
+
   // The analog pin number connected to the reset pin of the screen (SDA).
   int reset_pin = 4;
 
   // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins).
-  Adafruit_SSD1306 display(screen_width, screen_height, &Wire, 4);  
+  Adafruit_SSD1306 display(screen_width, screen_height, &Wire, 4);
 
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
-  
+
   // Clears previously displayed data and resets the cursor and text colour.
   display.clearDisplay();
   display.setCursor(0,0);
   display.setTextColor(WHITE);
 
-  // The input data string contains the text to be written, along with %#, 
-  // where # is the font size. This sets the font size by reading the last 
-  // character of the input data (by default it is 1), and converting it 
+  // The input data string contains the text to be written, along with %#,
+  // where # is the font size. This sets the font size by reading the last
+  // character of the input data (by default it is 1), and converting it
   // to an int. Once that is done, the last two characters are deleted.
   int font_size = data[data.length() - 1] - 48;
   display.setTextSize(font_size);
@@ -414,64 +414,64 @@ void SerialParser(void) {
   // separate command from associated data
   String cmd = read_.substring(1,idx1);
   String data = read_.substring(idx1+1,idx2);
-  
+
   // determine command sent
   if (cmd == "dw") {
-      DigitalHandler(1, data);   
+      DigitalHandler(1, data);
   }
   else if (cmd == "dr") {
-      DigitalHandler(0, data);   
-  }  
+      DigitalHandler(0, data);
+  }
   else if (cmd == "aw") {
-      AnalogHandler(1, data);   
-  }    
+      AnalogHandler(1, data);
+  }
   else if (cmd == "ar") {
-      AnalogHandler(0, data);   
-  }      
+      AnalogHandler(0, data);
+  }
   else if (cmd == "pm") {
-      ConfigurePinHandler(data);   
-  }    
+      ConfigurePinHandler(data);
+  }
   else if (cmd == "ps") {
-      pulseInSHandler(data);   
-  }    
+      pulseInSHandler(data);
+  }
   else if (cmd == "pi") {
-      pulseInHandler(data);   
-  }        
+      pulseInHandler(data);
+  }
   else if (cmd == "ss") {
-      SS_set(data);   
+      SS_set(data);
   }
   else if (cmd == "sw") {
-      SS_write(data);   
+      SS_write(data);
   }
   else if (cmd == "sr") {
-      SS_read(data);   
-  }    
+      SS_read(data);
+  }
   else if (cmd == "sva") {
-      SV_add(data);   
-  }      
+      SV_add(data);
+  }
   else if (cmd == "svr") {
-      SV_read(data);   
-  }   
+      SV_read(data);
+  }
  else if (cmd == "svw") {
-      SV_write(data);   
-  }    
+      SV_write(data);
+  }
  else if (cmd == "svwm") {
-      SV_write_ms(data);   
-  }      
+      SV_write_ms(data);
+  }
   else if (cmd == "svd") {
-      SV_remove(data);   
-  } 
+      SV_remove(data);
+  }
   else if (cmd == "version") {
-      Version();   
+      Version();
   }
   else if (cmd == "to") {
-      Tone(data);   
-  } 
+      Tone(data);
+  }
   else if (cmd == "nto") {
-      ToneNo(data);   
-  }  
+      ToneNo(data);
+  }
   else if (cmd == "cap") {
-      readCapacitivePin(data);   
+      readCapacitivePin(data);
   }
   else if (cmd == "so") {
       shiftOutHandler(data);
@@ -480,12 +480,12 @@ void SerialParser(void) {
       shiftInHandler(data);
   }
   else if (cmd == "eewr") {
-      EEPROMHandler(0, data);   
-  } 
+      EEPROMHandler(0, data);
+  }
   else if (cmd == "eer") {
-      EEPROMHandler(1, data);   
-  }  
-  else if (cmd == "sz") {  
+      EEPROMHandler(1, data);
+  }
+  else if (cmd == "sz") {
       sizeEEPROM();
   }
   else if (cmd == "dht") {
@@ -498,7 +498,7 @@ void SerialParser(void) {
 }
 
 void setup()  {
-  Serial.begin(115200); 
+  Serial.begin(115200);
     while (!Serial) {
       ; // wait for serial port to connect. Needed for Leonardo only
     }

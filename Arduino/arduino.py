@@ -12,7 +12,7 @@ if sys.platform.startswith('win'):
 else:
     import glob
 
-libraryVersion = 'V0.4'
+libraryVersion = 'V0.5'
 
 log = logging.getLogger(__name__)
 
@@ -499,7 +499,7 @@ class Arduino(object):
     # Bryan's attempt at extending this package's functionality to include the ability to write text to the Arduino screen.
     # I will ignore drawing anything fancy, and just focus on displaying text. If fancy drawings are seen to be useful, they can be added later.
 
-    # There will be several functions. One to clear and reset the display, 
+    # There will be several functions. One to clear and reset the display,
     # one to set up the display to draw things, and one to actually draw the text (the most resource-intensive, so should be called at the end)
 
 
@@ -507,7 +507,7 @@ class Arduino(object):
 
     def setupDisplay(self):
         """
-            Sets up a I2C-connected SSD1306 display to receive data. This sends 
+            Sets up a I2C-connected SSD1306 display to receive data. This sends
             the command 'scs' to the Arduino (SCreen Setup).
 
 
@@ -552,12 +552,12 @@ class Arduino(object):
 
     def displayText(self, text, fontsize=1):
         """
-            Sets a string of text to be displayed on the connected SSD1306 
+            Sets a string of text to be displayed on the connected SSD1306
                 display. It sends the command 'dst' to the Arduino.
 
             Inputs:
                 text: A string, containing the characters to be displayed.
-                fontsize: A single integer value, adjusts the size of the 
+                fontsize: A single integer value, adjusts the size of the
                     characters. Please only pass numbers between 1 and 9.
         """
 

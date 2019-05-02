@@ -2,10 +2,9 @@
 #include <Wire.h>
 #include <Servo.h>
 #include <EEPROM.h>
-#include <DHT.h>
 
 void Version(){
-  Serial.println(F("V0.4"));
+  Serial.println(F("V0.5"));
 }
 
 
@@ -84,7 +83,7 @@ uint8_t readCapacitivePin(String data) {
   else if (*pin & bitmask) { cycles = 16;}
 
   // Discharge the pin again by setting it low and output
-  //  It's important to leave the pins low if you want to 
+  //  It's important to leave the pins low if you want to
   //  be able to touch more than 1 sensor at a time - if
   //  the sensor is left pulled high, when you touch
   //  two sensors, your body will transfer the charge between
@@ -114,12 +113,12 @@ void Tone(String data){
     delay(pause);
     noTone(pin);
   }
-} 
+}
 
 void ToneNo(String data){
   int pin = Str2int(data);
   noTone(pin);
-} 
+}
 
 void DigitalHandler(int mode, String data){
       int pin = Str2int(data);
@@ -157,7 +156,7 @@ void ConfigurePinHandler(String data){
     }
 }
 
-void shiftOutHandler(String data) {    
+void shiftOutHandler(String data) {
     String sdata[4];
     split(sdata, 4, data, '%');
     int dataPin = sdata[0].toInt();
@@ -203,10 +202,10 @@ void SS_write(String data) {
  char buffer[len];
  data.toCharArray(buffer,len);
  Serial.println("ss OK");
- sserial->write(buffer); 
+ sserial->write(buffer);
 }
 void SS_read(String data) {
- char c = sserial->read(); 
+ char c = sserial->read();
  Serial.println(c);
 }
 
@@ -215,10 +214,10 @@ void pulseInHandler(String data){
     long duration;
     if(pin <=0){
           pinMode(-pin, INPUT);
-          duration = pulseIn(-pin, LOW);      
+          duration = pulseIn(-pin, LOW);
     }else{
           pinMode(pin, INPUT);
-          duration = pulseIn(pin, HIGH);      
+          duration = pulseIn(pin, HIGH);
     }
     Serial.println(duration);
 }
@@ -234,7 +233,7 @@ void pulseInSHandler(String data){
           delayMicroseconds(5);
           digitalWrite(-pin, HIGH);
           pinMode(-pin, INPUT);
-          duration = pulseIn(-pin, LOW);      
+          duration = pulseIn(-pin, LOW);
     }else{
           pinMode(pin, OUTPUT);
           digitalWrite(pin, LOW);
@@ -243,7 +242,7 @@ void pulseInSHandler(String data){
           delayMicroseconds(5);
           digitalWrite(pin, LOW);
           pinMode(pin, INPUT);
-          duration = pulseIn(pin, HIGH);      
+          duration = pulseIn(pin, HIGH);
     }
     Serial.println(duration);
 }
@@ -311,55 +310,13 @@ void sizeEEPROM() {
 void EEPROMHandler(int mode, String data) {
     String sdata[2];
     split(sdata, 2, data, '%');
-    if (mode == 0) {  
-        EEPROM.write(Str2int(sdata[0]), Str2int(sdata[1]));  
+    if (mode == 0) {
+        EEPROM.write(Str2int(sdata[0]), Str2int(sdata[1]));
     } else {
         Serial.println(EEPROM.read(Str2int(sdata[0])));
     }
 }
 
-int dhtSensorPin = -1;
-DHT dhtSensor(dhtSensorPin, DHT11);
-
-void dht(String data) {
-  
-    String sdata[2];
-    split(sdata, 2, data, '%');
-    int dataPin = sdata[0].toInt();
-    int sensorNumber = sdata[1].toInt();
-    
-    int sensorType = DHT11; // assume DHT11 as default
-    if (sensorNumber == 1) {
-      sensorType = DHT12;
-    } else if (sensorNumber == 2) {
-      sensorType = DHT21;
-    } else if (sensorNumber == 2) {
-      sensorType = DHT22;
-    } else if (sensorNumber == 2) {
-      sensorType = AM2301;
-    }
-
-    // do not initialize new sensor if we are reading repeatedly from same sensor
-    if (dataPin != dhtSensorPin) {
-        dhtSensorPin = dataPin;
-        dhtSensor = DHT(dataPin, sensorType);
-        dhtSensor.begin();
-    }
-
-    // Reading temperature or humidity takes about 250 milliseconds!
-    // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
-    float h = dhtSensor.readHumidity();
-    // Read temperature as Celsius (the default)
-    float t = dhtSensor.readTemperature();
-    
-    if (isnan(h) || isnan(t)) {
-        Serial.println("0&0&0");
-        return;
-    }
-    
-    float hic = dhtSensor.computeHeatIndex(t, h, false);
-    Serial.println(String(h) + "&" + String(t) + "&" + String(hic));
-}
 
 void SerialParser(void) {
   char readChar[64];
@@ -371,64 +328,64 @@ void SerialParser(void) {
   // separate command from associated data
   String cmd = read_.substring(1,idx1);
   String data = read_.substring(idx1+1,idx2);
-  
+
   // determine command sent
   if (cmd == "dw") {
-      DigitalHandler(1, data);   
+      DigitalHandler(1, data);
   }
   else if (cmd == "dr") {
-      DigitalHandler(0, data);   
-  }  
+      DigitalHandler(0, data);
+  }
   else if (cmd == "aw") {
-      AnalogHandler(1, data);   
-  }    
+      AnalogHandler(1, data);
+  }
   else if (cmd == "ar") {
-      AnalogHandler(0, data);   
-  }      
+      AnalogHandler(0, data);
+  }
   else if (cmd == "pm") {
-      ConfigurePinHandler(data);   
-  }    
+      ConfigurePinHandler(data);
+  }
   else if (cmd == "ps") {
-      pulseInSHandler(data);   
-  }    
+      pulseInSHandler(data);
+  }
   else if (cmd == "pi") {
-      pulseInHandler(data);   
-  }        
+      pulseInHandler(data);
+  }
   else if (cmd == "ss") {
-      SS_set(data);   
+      SS_set(data);
   }
   else if (cmd == "sw") {
-      SS_write(data);   
+      SS_write(data);
   }
   else if (cmd == "sr") {
-      SS_read(data);   
-  }    
+      SS_read(data);
+  }
   else if (cmd == "sva") {
-      SV_add(data);   
-  }      
+      SV_add(data);
+  }
   else if (cmd == "svr") {
-      SV_read(data);   
-  }   
+      SV_read(data);
+  }
  else if (cmd == "svw") {
-      SV_write(data);   
-  }    
+      SV_write(data);
+  }
  else if (cmd == "svwm") {
-      SV_write_ms(data);   
-  }      
+      SV_write_ms(data);
+  }
   else if (cmd == "svd") {
-      SV_remove(data);   
-  } 
+      SV_remove(data);
+  }
   else if (cmd == "version") {
-      Version();   
+      Version();
   }
   else if (cmd == "to") {
-      Tone(data);   
-  } 
+      Tone(data);
+  }
   else if (cmd == "nto") {
-      ToneNo(data);   
-  }  
+      ToneNo(data);
+  }
   else if (cmd == "cap") {
-      readCapacitivePin(data);   
+      readCapacitivePin(data);
   }
   else if (cmd == "so") {
       shiftOutHandler(data);
@@ -437,21 +394,18 @@ void SerialParser(void) {
       shiftInHandler(data);
   }
   else if (cmd == "eewr") {
-      EEPROMHandler(0, data);   
-  } 
-  else if (cmd == "eer") {
-      EEPROMHandler(1, data);   
-  }  
-  else if (cmd == "sz") {  
-      sizeEEPROM();
+      EEPROMHandler(0, data);
   }
-  else if (cmd == "dht") {
-      dht(data);
+  else if (cmd == "eer") {
+      EEPROMHandler(1, data);
+  }
+  else if (cmd == "sz") {
+      sizeEEPROM();
   }
 }
 
 void setup()  {
-  Serial.begin(115200); 
+  Serial.begin(115200);
     while (!Serial) {
       ; // wait for serial port to connect. Needed for Leonardo only
     }

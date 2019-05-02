@@ -192,6 +192,10 @@ print(board.EEPROM.read(location))
 print('EEPROM size {size}'.format(size=board.EEPROM.size()))
 ```
 
+**Screen**
+Display text on an LCD screen.
+Use the function displayText(text, fontSize = 1) to display a string on the screen.
+
 **DHT**
 
 - `Arduino.dht(pin, module)` reads sensor values from the DHT sensor connected at the specified pin.
