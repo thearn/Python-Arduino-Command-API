@@ -496,15 +496,15 @@ class Arduino(object):
         except:
             return None
 
-    
+
     def displayText(self, text, fontsize=1):
         """
-            Sets a string of text to be displayed on the connected SSD1306 
+            Sets a string of text to be displayed on the connected SSD1306
                 display. It sends the command 'dst' to the Arduino.
 
             Inputs:
                 text: A string, containing the characters to be displayed.
-                fontsize: A single integer value, adjusts the size of the 
+                fontsize: A single integer value, adjusts the size of the
                     characters. Please only pass numbers between 1 and 9.
         """
 
