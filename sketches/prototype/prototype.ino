@@ -328,13 +328,13 @@ DHT dhtSensor(dhtSensorPin, DHT11);
 void dht(String data) {
 
     String sdata[2];
+    split(sdata, 2, data, '%');
     int dataPin = sdata[0].toInt();
     int sensorNumber = sdata[1].toInt();
 
     int sensorType = DHT11; // assume DHT11 as default
     if (sensorNumber == 1) {
-   //    split(sdata, 2, data, '%');
-   sensorType = DHT12;
+      sensorType = DHT12;
     } else if (sensorNumber == 2) {
       sensorType = DHT21;
     } else if (sensorNumber == 2) {
@@ -400,7 +400,7 @@ void displayText(String data) {
 
   // Prints the above to the display. Relatively resource-intensive.
   display.display();
-  delay(50);
+  delay(100);
 }
 
 // TODO: try a switch statement, might save memory.
