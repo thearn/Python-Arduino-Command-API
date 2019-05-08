@@ -12,7 +12,7 @@ if sys.platform.startswith('win'):
 else:
     import glob
 
-libraryVersion = 'V0.5'
+libraryVersion = 'V0.6'
 
 log = logging.getLogger(__name__)
 
@@ -497,23 +497,6 @@ class Arduino(object):
             return None
 
 
-    def displayText(self, text, fontsize=1):
-        """
-            Sets a string of text to be displayed on the connected SSD1306
-                display. It sends the command 'dst' to the Arduino.
-
-            Inputs:
-                text: A string, containing the characters to be displayed.
-                fontsize: A single integer value, adjusts the size of the
-                    characters. Please only pass numbers between 1 and 9.
-        """
-
-        cmd_str = build_cmd_str("dst", (text, fontsize))
-        try:
-            self.sr.write(str.encode(cmd_str))
-            self.sr.flush()
-        except:
-            pass
 
 
 class Shrimp(Arduino):

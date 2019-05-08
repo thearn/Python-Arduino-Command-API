@@ -46,7 +46,7 @@ build install` from the source directory to install this library.
 
 ## Setup:
 1. Verify that your Arduino board communicates at the baud rate specified in the
-`setup()` function (line 348) in `prototype.ino`. Change it there if necessary.
+`setup()` function (line 407) in `prototype.ino`. Change it there if necessary.
 2. Load the `prototype.ino` sketch onto your Arduino board, using the Arduino IDE.
 3. Set up some kind of serial I/O communication between the Arduino board and your computer (via physical USB cable,
 Bluetooth, xbee, etc. + associated drivers)
@@ -192,47 +192,6 @@ print(board.EEPROM.read(location))
 print('EEPROM size {size}'.format(size=board.EEPROM.size()))
 ```
 
-**Screen**
-Display text on an LCD screen.
-Use the function displayText(text, fontSize = 1) to display a string on the screen.
-
-**DHT**
-
-- `Arduino.dht(pin, module)` reads sensor values from the DHT sensor connected at the specified pin.
-
-Read data from DHT temperature and humidity sensors based on the
-Adafruit [DHT sensor library](https://github.com/adafruit/DHT-sensor-library).
-
-Pass as arguments the pin the sensor is connected to (as an integer) and the sensor type you are using as an integer (see list below).
-
-There are five sensors that work with this library:
-- 0 = DHT 11 (blue cage, less accurate)
-- 1 = DHT 12
-- 2 = DHT 21
-- 3 = DHT 22 (white cage)
-- 4 = AM2301
-
-The function returns an array of three elements:
-1. humidity (in %)
-2. temperature (in Celsius)
-3. heat index (in Celsius)
-
-If there is an error with the reading (e.g., the selected sensor is wrong) all values will return as zero.
-
-```python
-#DHT sensor example
-pin = 7
-sensorType = 0
-
-data = board.dht(pin, sensorType)
-[humidity, temperature, heatIndex] = data
-
-reply =  "Humidity = " + str(humidity) + " % \t"
-reply += "Temperature = " + str(temperature) + " ˙C \t"
-reply += "Heat Index = " + str(heatIndex) + " ˙C"
-
-print(reply)
-```
 
 **Misc**
 
