@@ -14,18 +14,24 @@ should at least be maintained here.
 
 logging.basicConfig(level=logging.DEBUG)
 
+# Bind raw_input to input in python 2.7
+try:
+    input = raw_input
+except NameError:
+    pass
+
 
 class TestBasics(unittest.TestCase):
 
     def test_find(self):
         """ Tests auto-connection/board detection. """
-        raw_input(
+        input(
             'Plug in Arduino board w/LED at pin 13, reset, then press enter')
         from Arduino import Arduino
         board = None
         try:
             # This will trigger automatic port resolution.
-            board = Arduino(9600)
+            board = Arduino(115200)
         finally:
             if board:
                 board.close()
@@ -34,15 +40,15 @@ class TestBasics(unittest.TestCase):
         """ Tests connecting to an explicit port. """
         port = None
         while not port:
-            port = raw_input(
+            port = input(
                 'Plug in Arduino board w/LED at pin 13, reset.\n'\
                 'Enter the port where the Arduino is connected, then press enter:')
             if not port:
-                print 'You must enter a port.'
+                print('You must enter a port.')
         from Arduino import Arduino
         board = None
         try:
-            board = Arduino(9600, port=port)
+            board = Arduino(115200, port=port)
         finally:
             if board:
                 board.close()

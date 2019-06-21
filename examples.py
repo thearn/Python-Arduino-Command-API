@@ -73,4 +73,4 @@ def LCD(tx, baud, ssbaud, message, port=""):
         board.SoftwareSerial.write(" test ")
 
 if __name__ == "__main__":
-    Blink(13, '9600')
+    Blink(13, '115200')
