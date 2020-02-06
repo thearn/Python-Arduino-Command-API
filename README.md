@@ -1,5 +1,11 @@
-# Python Arduino Command API
+# DHT_IR_ULTRA Mod
+Updated prototype.ino to control DHT sensor, Ultrasonic sensor, IR sensor
 
+# Ultrasonic sensor mapping example:
+https://github.com/Vyachez/Mapping_with_sensor_Arduino_python
+
+# Basics
+# Python Arduino Command API
 The Python Arduino Command API is a light-weight Python library for
 communicating with [Arduino microcontroller boards](http://www.arduino.cc/) from a connected computer using
 standard serial IO, either over a physical wire 
