@@ -6,7 +6,7 @@ import serial
 import time
 from serial.tools import list_ports
 if platform.system() == 'Windows':
-    import _winreg as winreg
+    import winreg as winreg
 else:
     import glob
 
