@@ -34,7 +34,7 @@ while True:
 ```
 
 ## Requirements:
-- [Python](http://python.org/) 2.3 or higher (Python 3.x not yet tested, but would probably work)
+- [Python](http://python.org/) 2.3 or higher (Note: Python 3.x does not work.)
 - [pyserial](http://pyserial.sourceforge.net/) 2.6 or higher
 - Any [Arduino compatible microcontroller](https://www.sparkfun.com/categories/242) with at least 14KB of flash memory
 
