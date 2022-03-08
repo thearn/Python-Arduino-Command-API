@@ -32,6 +32,7 @@ while True:
     board.digitalWrite(13, "HIGH")
     time.sleep(1)
 ```
+Any function or command that you would run in `void setup()` you will run right after the import statements. The `while True:` functions as the `void loop()`. That is why the Serial initalization and `pinMode` occured earlier. 
 
 ## Requirements:
 - [Python](http://python.org/) 2.3 or higher (Python 3.x not yet tested, but would probably work)
@@ -39,8 +40,15 @@ while True:
 - Any [Arduino compatible microcontroller](https://www.sparkfun.com/categories/242) with at least 14KB of flash memory
 
 ## Installation:
-Either run `pip install arduino-python` from a command line, or run `python setup.py
-build install` from the source directory to install this library.
+### Using PIP 
+Run `pip install arduino-python` from a command line
+
+### Build and Install from source:
+Clone the repo: `git clone https://github.com/thearn/Python-Arduino-Command-API.git`
+Navigate to the directory
+Run `python setup.py build install` 
+
+***NOTE: On Linux systems, you must use `python setup.py build install` only if you have python2 specifically installed. Run `python` to see the verison. Many linux distros come with `python` aliased to `python3`***
 
 ## Setup:
 1. Verify that your Arduino board communicates at the baud rate specified in the
