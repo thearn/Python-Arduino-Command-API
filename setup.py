@@ -1,13 +1,19 @@
-from setuptools import setup
+import setuptools
 
-setup(name='arduino-python',
-      version='0.2',
-      install_requires=['pyserial'],
-      description="A light-weight Python library that provides a serial \
-      bridge for communicating with Arduino microcontroller boards.",
-      author='Tristan Hearn',
-      author_email='tristanhearn@gmail.com',
-      url='https://github.com/thearn/Python-Arduino-Command-API',
-      license='MIT',
-      packages=['Arduino'],
-      )
+with open("README.md", "r") as fh:
+  long_description = fh.read()
+
+setuptools.setup(
+  name="arduino-python3",
+  version="0.6",
+  install_requires=['pyserial'],
+  author="Morten Kals",
+  author_email="morten@kals.no",
+  description="A light-weight Python library that provides a serial \
+  bridge for communicating with Arduino microcontroller boards. Extended to work with Python 3",
+  long_description=long_description,
+  long_description_content_type="text/markdown",
+  url='https://github.com/mkals/Arduino-Python3-Command-API',
+  packages=['Arduino'],
+  license='MIT',
+)
